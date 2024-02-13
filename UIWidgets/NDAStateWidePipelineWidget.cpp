@@ -82,7 +82,7 @@ bool NDAStateWidePipelineWidget::outputToJSON(QJsonObject &rvObject)
     auto assetFilePath = appData["pathToSource"].toString();
 
     QDir dirInfo(assetFilePath);
-    auto assetDirName = dirInfo.dirName();
+    auto assetDirName = dirInfo.absolutePath();
     auto pathToFile = assetDirName + QDir::separator() + assetFileName;
 
     //    auto pathToFile = assetFilePath + QDir::separator() + assetFileName;

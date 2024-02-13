@@ -321,6 +321,8 @@ void SimCenterJsonWidget::handleAddButtonPressed(void)
         addRunListWidget->outputToJSON(modObj);
 
         finalObj[key] = modObj;
+
+        addRunListWidget->outputToJSON(finalObj);
     }
 
     // qDebug()<<finalObj;

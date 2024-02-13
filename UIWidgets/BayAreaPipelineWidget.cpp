@@ -88,7 +88,11 @@ bool BayAreaPipelineWidget::outputToJSON(QJsonObject &rvObject)
 
     //    auto pathToFile = assetFileName;
 
-    rvObject.insert("SiteDataFile", pathToFile);
+    QFileInfo pathToFileInfo(pathToFile);
+    auto absPathToFile = pathToFileInfo.absoluteFilePath();
+
+//    rvObject.insert("SiteDataFile", pathToFile);
+    rvObject.insert("SiteDataFile", absPathToFile);
 
     if(!appData.contains("CRS"))
     {

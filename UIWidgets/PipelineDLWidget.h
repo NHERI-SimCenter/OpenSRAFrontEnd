@@ -1,5 +1,5 @@
-#ifndef PipelineNetworkWidget_H
-#define PipelineNetworkWidget_H
+#ifndef PipelineDLWidget_H
+#define PipelineDLWidget_H
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
@@ -40,70 +40,36 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <MultiComponentR2D.h>
 
-class VisualizationWidget;
-class AssetInputWidget;
-class SimCenterAppSelection;
+class MultiComponentDVWidget;
+class MultiComponentDMWidget;
+class MultiComponentEDPWidget;
 
-class StateWidePipelineWidget;
-class BayAreaPipelineWidget;
-class LosAngelesPipelineWidget;
-class LineAssetInputWidget;
-class CSVWellsCaprocksInputWidget;
-class GISWellsCaprocksInputWidget;
-class CSVAboveGroundGasComponentInputWidget;
-class GISAboveGroundGasComponentInputWidget;
-class NDAStateWidePipelineWidget;
-class NDABayAreaPipelineWidget;
-
-class QGroupBox;
-
-class PipelineNetworkWidget : public  MultiComponentR2D
+class PipelineDLWidget : public  MultiComponentR2D
 {
     Q_OBJECT
 
 public:
-    explicit PipelineNetworkWidget(VisualizationWidget* visWidget, QWidget *parent = nullptr);
-    ~PipelineNetworkWidget();
+    explicit PipelineDLWidget(QWidget *parent = nullptr);
+    ~PipelineDLWidget();
 
-
-    bool inputAppDataFromJSON(QJsonObject &jsonObject);
     bool outputAppDataToJSON(QJsonObject &jsonObject);
-
-    bool inputFromJSON(QJsonObject &rvObject);
     bool outputToJSON(QJsonObject &rvObject);
-
+    bool inputFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &destName);
-
-    LineAssetInputWidget *getTheBelowGroundInputWidget() const;
 
 
 signals:
 
-//    void componentChangedSignal(AssetInputWidget* widget);
-
 public slots:
 
-//    void handleComponentChanged(QString compName);
     void clear(void);
 
 private:
 
-    SimCenterAppSelection* gasPipelineWidget = nullptr;
+    MultiComponentDVWidget* theDecisionVariableWidget = nullptr;
+    MultiComponentDMWidget* theDamageMeasureWidget = nullptr;
+    MultiComponentEDPWidget* theEDPWidget = nullptr;
 
-    LineAssetInputWidget* csvBelowGroundInputWidget = nullptr;
-
-    StateWidePipelineWidget* statewideBelowGroundInputWidget = nullptr;
-    BayAreaPipelineWidget* bayareaBelowGroundInputWidget = nullptr;
-    LosAngelesPipelineWidget* losangelesBelowGroundInputWidget = nullptr;
-    NDAStateWidePipelineWidget* ndaStatewideBelowGroundInputWidget = nullptr;
-    NDABayAreaPipelineWidget* ndaBayareaBelowGroundInputWidget = nullptr;
-
-    SimCenterAppSelection* theWellsCaprocksWidget = nullptr;
-    SimCenterAppSelection* theAboveGroundInfWidget = nullptr;
-
-    VisualizationWidget* theVisualizationWidget;
-
-//    QVector<AssetInputWidget*> vectorOfComponents;
 };
 
-#endif // PipelineNetworkWidget_H
+#endif // PipelineDLWidget_H

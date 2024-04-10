@@ -1,5 +1,5 @@
-#ifndef RANDOM_VARIABLES_CONTAINER_H
-#define RANDOM_VARIABLES_CONTAINER_H
+#ifndef RANDOM_VARIABLES_WIDGET_H
+#define RANDOM_VARIABLES_WIDGET_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -39,7 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "RV.h"
 
-#include <SimCenterWidget.h>
+#include <SimCenterAppWidget.h>
 
 class RVTableView;
 class ComboBoxDelegate;
@@ -50,7 +50,7 @@ class QVBoxLayout;
 class QDialog;
 class QCheckBox;
 
-class RandomVariablesWidget : public SimCenterWidget
+class RandomVariablesWidget : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
@@ -136,4 +136,4 @@ private:
 
 };
 
-#endif // RANDOM_VARIABLES_CONTAINER_H
+#endif // RANDOM_VARIABLES_WIDGET_H

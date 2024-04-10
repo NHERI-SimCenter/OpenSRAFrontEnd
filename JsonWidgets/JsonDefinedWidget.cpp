@@ -37,7 +37,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Dr. Stevan Gavrilovic, UC Berkeley
 
 #include "JsonDefinedWidget.h"
+#ifdef OpenSRA
 #include "WorkflowAppOpenSRA.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 
 #include <QJsonArray>
 #include <QLabel>
@@ -53,7 +57,11 @@ JsonDefinedWidget::JsonDefinedWidget(QWidget* parent, const QJsonObject& obj, co
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+#ifdef OpenSRA
     auto theWidgetFactory = WorkflowAppOpenSRA::getInstance()->getTheWidgetFactory();
+#else
+    auto theWidgetFactory = WorkflowAppR2D::getInstance()->getTheWidgetFactory();
+#endif
 
     this->setMethodAndParamJsonObj(obj);
 

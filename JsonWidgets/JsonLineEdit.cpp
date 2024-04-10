@@ -67,7 +67,7 @@ bool JsonLineEdit::outputToJSON(QJsonObject &jsonObject)
         jsonObject[key] = QJsonValue::Null; // "null"
     else
     {
-        this->errorMessage("Error, type not supported in " + this->objectName());
+        ProgramOutputDialog::getInstance()->appendErrorMessage("Error, type not supported in " + this->objectName());
         return false;
     }
 
@@ -129,7 +129,7 @@ QString JsonLineEdit::getStringValueJson(const QJsonValue& obj)
     }
     else
     {
-        this->errorMessage("Error, type not supported in " + this->objectName());
+        ProgramOutputDialog::getInstance()->appendErrorMessage("Error, type not supported in " + this->objectName());
     }
 
     return val;

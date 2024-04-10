@@ -37,11 +37,20 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Dr. Stevan Gavrilovic, UC Berkeley
 
 #include "JsonGroupBoxWidget.h"
+#ifdef OpenSRA
 #include "WorkflowAppOpenSRA.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 
 JsonGroupBoxWidget::JsonGroupBoxWidget(QWidget* parent, const QJsonObject& obj, const QString parentKey) : QGroupBox(parent)
 {
+
+#ifdef OpenSRA
     auto theWidgetFactory = WorkflowAppOpenSRA::getInstance()->getTheWidgetFactory();
+#else
+    auto theWidgetFactory = WorkflowAppR2D::getInstance()->getTheWidgetFactory();
+#endif
 
     auto params = obj["Params"].toObject();
 

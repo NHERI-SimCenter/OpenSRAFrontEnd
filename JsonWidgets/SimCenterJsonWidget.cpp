@@ -43,7 +43,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "JsonWidget.h"
 #include "WidgetFactory.h"
 #include "AddToRunListWidget.h"
+#ifdef OpenSRA
 #include "WorkflowAppOpenSRA.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 #include "RandomVariablesWidget.h"
 #include "GenericModelWidget.h"
 
@@ -71,7 +75,11 @@ SimCenterJsonWidget::SimCenterJsonWidget(QString methodName, QJsonObject jsonObj
 {
     this->setObjectName(methodName);
 
+#ifdef OpenSRA
     theInputParamsWidget = WorkflowAppOpenSRA::getInstance()->getTheRandomVariableWidget();
+#else
+    theInputParamsWidget = WorkflowAppR2D::getInstance()->getTheRandomVariableWidget();
+#endif
 
     assert(theInputParamsWidget != nullptr);
 
@@ -276,7 +284,11 @@ void SimCenterJsonWidget::handleAddButtonPressed(void)
     }
 
     // Get the human readable text or name to display
+#ifdef OpenSRA
     auto methodsAndParamsMap = WorkflowAppOpenSRA::getInstance()->getMethodsAndParamsMap();
+#else
+    auto methodsAndParamsMap = WorkflowAppR2D::getInstance()->getMethodsAndParamsMap();
+#endif
     auto name = methodsAndParamsMap.value(key,QString());
 
     if(name.isEmpty())
@@ -521,7 +533,11 @@ bool SimCenterJsonWidget::inputFromJSON(QJsonObject &jsonObject)
         return false;
     }
 
+#ifdef OpenSRA
     auto methodsAndParamsMap = WorkflowAppOpenSRA::getInstance()->getMethodsAndParamsMap();
+#else
+    auto methodsAndParamsMap = WorkflowAppR2D::getInstance()->getMethodsAndParamsMap();
+#endif
 
     // Get the original method object passed from the methods and params file, this is where the parameters are stored
     auto passedObj = methodWidget->getMethodAndParamJsonObj();

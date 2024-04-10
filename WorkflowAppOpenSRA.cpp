@@ -42,7 +42,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "MultiComponentDVWidget.h"
 #include "MultiComponentDMWidget.h"
 #include "RandomVariablesWidget.h"
-#include "UIWidgets/GeneralInformationWidget.h"
+#include "GeneralInformationWidget.h"
 #include "UIWidgets/IntensityMeasureWidget.h"
 #include "LocalApplication.h"
 #include "PipelineNetworkWidget.h"

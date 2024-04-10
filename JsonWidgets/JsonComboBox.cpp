@@ -140,7 +140,7 @@ bool JsonComboBox::inputFromJSON(QJsonObject &jsonObject)
         if(jsonObject.value(name).isNull())
             this->setCurrentIndex(0);
         else
-            this->errorMessage("Error, could not find the item "+ itemString + " in " + name);
+            ProgramOutputDialog::getInstance()->appendErrorMessage("Error, could not find the item "+ itemString + " in " + name);
 
         return true;
     }

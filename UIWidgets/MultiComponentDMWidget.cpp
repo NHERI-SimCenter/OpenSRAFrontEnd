@@ -33,7 +33,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "MultiComponentDMWidget.h"
 #include "EDPLandslideWidget.h"
 #include "SimCenterJsonWidget.h"
+#ifdef OpenSRA
 #include "WorkflowAppOpenSRA.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 #include "DamageMeasureWidget.h"
 
 #include "sectiontitle.h"
@@ -71,7 +75,11 @@ MultiComponentDMWidget::MultiComponentDMWidget(QWidget *parent) : MultiComponent
 
     theMainLayout->insertLayout(0,theHeaderLayout);
 
+#ifdef OpenSRA
     auto mainObj = WorkflowAppOpenSRA::getInstance()->getMethodsAndParamsObj();
+#else
+    auto mainObj = WorkflowAppR2D::getInstance()->getMethodsAndParamsObj();
+#endif
 
     auto belowGroundObj = mainObj.value("BelowGround").toObject();
 
@@ -145,15 +153,15 @@ bool MultiComponentDMWidget::inputFromJSON(QJsonObject &jsonObject)
 
 bool MultiComponentDMWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 {
-    Q_UNUSED(jsonObject);
-    return true;
+    return this->outputToJSON(jsonObject);
 }
 
 
 bool MultiComponentDMWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    Q_UNUSED(jsonObject);
-    return true;
+    auto keyJsonObj = jsonObject[jsonKeyword].toObject();
+
+    return this->inputFromJSON(keyJsonObj);
 }
 
 

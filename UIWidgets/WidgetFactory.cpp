@@ -48,7 +48,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "JsonGroupBoxWidget.h"
 #include "AssetInputWidget.h"
 #include "LineAssetInputWidget.h"
+#ifdef OpenSRA
 #include "WorkflowAppOpenSRA.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 #include "GenericModelWidget.h"
 #include "RandomVariablesWidget.h"
 
@@ -109,7 +113,11 @@ QWidget* WidgetFactory::getComboBoxWidget(const QJsonObject& obj, const QString&
         return nullptr;
 
     if(theRVWidget == nullptr)
+#ifdef OpenSRA
         theRVWidget = WorkflowAppOpenSRA::getInstance()->getTheRandomVariableWidget();
+#else
+        theRVWidget = WorkflowAppR2D::getInstance()->getTheRandomVariableWidget();
+#endif
 
     JsonWidget* mainWidget = new JsonWidget(parent);
     mainWidget->setContentsMargins(0,0,0,0);

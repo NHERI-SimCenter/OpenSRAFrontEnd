@@ -35,9 +35,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 *************************************************************************** */
 
 #include "RandomVariablesWidget.h"
-#include "WorkflowAppOpenSRA.h"
-#include "PipelineNetworkWidget.h"
-#include "LineAssetInputWidget.h"
 #include "CSVReaderWriter.h"
 
 #include "RVTableView.h"
@@ -53,15 +50,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QJsonArray>
+#include <QJsonObject>
 #include <QJsonDocument>
 #include <sectiontitle.h>
 #include <QLineEdit>
-#include <QFileDialog>
 #include <QScrollArea>
 #include <QDialog>
+#include <QDir>
 #include <QPushButton>
 
-RandomVariablesWidget::RandomVariablesWidget(QWidget *parent) : SimCenterWidget(parent)
+RandomVariablesWidget::RandomVariablesWidget(QWidget *parent) : SimCenterAppWidget(parent)
 {
     verticalLayout = new QVBoxLayout(this);
     verticalLayout->setMargin(2);
@@ -456,6 +454,10 @@ void RandomVariablesWidget::handleCellChanged(int row, int col)
 
 bool RandomVariablesWidget::inputFromJSON(QJsonObject &jsonObject)
 {
+
+#ifndef OpenSRA
+    jsonObject = jsonObject[this->objectName()].toObject();
+#endif
 
     auto rvFileName = jsonObject["RandomVariablesFileName"].toString();
 

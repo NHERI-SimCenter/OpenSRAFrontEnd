@@ -41,22 +41,27 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "SimCenterComponentSelection.h"
 #include "ComponentTableView.h"
 #include "RandomVariablesWidget.h"
+#ifdef OpenSRA
+#include "StateWidePipelineWidget.h"
+#include "BayAreaPipelineWidget.h"
+#include "LosAngelesPipelineWidget.h"
 #include "WorkflowAppOpenSRA.h"
+#include "NDAStateWidePipelineWidget.h"
+#include "NDABayAreaPipelineWidget.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 #include "MixedDelegate.h"
 #include "SimCenterAppSelection.h"
 #include "GISGasNetworkInputWidget.h"
 
-#include "StateWidePipelineWidget.h"
-#include "BayAreaPipelineWidget.h"
-#include "LosAngelesPipelineWidget.h"
 #include "LineAssetInputWidget.h"
 #include "PointAssetInputWidget.h"
 #include "CSVWellsCaprocksInputWidget.h"
 #include "GISWellsCaprocksInputWidget.h"
 #include "CSVAboveGroundGasComponentInputWidget.h"
 #include "GISAboveGroundGasComponentInputWidget.h"
-#include "NDAStateWidePipelineWidget.h"
-#include "NDABayAreaPipelineWidget.h"
+
 
 #include "VisualizationWidget.h"
 
@@ -76,7 +81,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QPushButton>
 
 PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWidget *parent)
-    : MultiComponentR2D("NaturalGasNetwork",parent), theVisualizationWidget(visWidget)
+    : MultiComponentR2D("GasNetwork",parent), theVisualizationWidget(visWidget)
 {
     this->setContentsMargins(0,0,0,0);
 
@@ -97,7 +102,7 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
     theMainLayout->insertLayout(0,theHeaderLayout);
 
     // Gas pipelines
-    gasPipelineWidget = new SimCenterAppSelection(QString("Pipeline Network"), QString("Assets"), QString("NaturalGasPipelines"), QString(), this);
+    gasPipelineWidget = new SimCenterAppSelection(QString("Pipeline Network"), QString("NaturalGasPipelines"), QString("NaturalGasPipelines"), QString(), this);
 
     // CSV pipelines
     csvBelowGroundInputWidget = new LineAssetInputWidget(this, theVisualizationWidget, "Gas Pipelines","Gas Network");
@@ -106,6 +111,8 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
     csvBelowGroundInputWidget->setLabel1("Load segment information from a CSV File and pick the columns with the start, mid, and end points of segments");
     csvBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
 
+
+#ifdef OpenSRA
     // Statewide
     statewideBelowGroundInputWidget = new StateWidePipelineWidget(this, theVisualizationWidget, "Pipeline Network","Pipeline Network");
     bayareaBelowGroundInputWidget = new BayAreaPipelineWidget(this, theVisualizationWidget, "Pipeline Network","Pipeline Network");
@@ -114,16 +121,16 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
     ndaStatewideBelowGroundInputWidget = new NDAStateWidePipelineWidget(this, theVisualizationWidget, "Pipeline Network","Pipeline Network");
     ndaBayareaBelowGroundInputWidget = new NDABayAreaPipelineWidget(this, theVisualizationWidget, "Pipeline Network","Pipeline Network");
 
+    ndaStatewideBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
+    ndaBayareaBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
     //    statewideBelowGroundInputWidget->setLabel1("Load information from CSV File (headers in CSV file must match those shown in the table below)");
     statewideBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
     bayareaBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
     losangelesBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
-    ndaStatewideBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
-    ndaBayareaBelowGroundInputWidget->setLabel3("Locations and Characteristics of the Components to the Infrastructure");
-
 
     // Clear exsiting data if any
     connect(ndaStatewideBelowGroundInputWidget, &NDAStateWidePipelineWidget::clearExisting, this, &PipelineNetworkWidget::clear);
+#endif
 
     // GIS pipelines
     GISGasNetworkInputWidget *gisGasNetworkInventory = new GISGasNetworkInputWidget(this, theVisualizationWidget);
@@ -132,15 +139,17 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
     // Add the pipeline widgets to the selection widget
     gasPipelineWidget->addComponent(QString("CSV to Pipeline"), QString("CSV_to_PIPELINE"), csvBelowGroundInputWidget);
     gasPipelineWidget->addComponent(QString("GIS to Pipeline"), QString("GIS_to_PIPELINE"), gisGasNetworkInventory);
+
+#ifdef OpenSRA
     gasPipelineWidget->addComponent(QString("Use Prepackaged State Pipeline Network"), QString("STATE_PIPELINE"), statewideBelowGroundInputWidget);
     gasPipelineWidget->addComponent(QString("Use Prepackaged Bay Area Pipeline Network"), QString("BAY_AREA_PIPELINE"), bayareaBelowGroundInputWidget);
     gasPipelineWidget->addComponent(QString("Use Prepackaged Los Angeles Pipeline Network"), QString("LOS_ANGELES_PIPELINE"), losangelesBelowGroundInputWidget);
     gasPipelineWidget->addComponent(QString("Use NDA Pipeline Network - Statewide"), QString("NDA_PIPELINE_STATE"), ndaStatewideBelowGroundInputWidget);
     gasPipelineWidget->addComponent(QString("Use NDA Pipeline Network - Cropped to Bay Area"), QString("NDA_PIPELINE_BAY_AREA"), ndaBayareaBelowGroundInputWidget);
-
+#endif
 
     // Above ground widget
-    theAboveGroundInfWidget = new SimCenterAppSelection(QString("Above Ground Gas Infrastructure"), QString("Assets"), QString("Above ground infrastructure"), QString(), this);
+    theAboveGroundInfWidget = new SimCenterAppSelection(QString("Above Ground Gas Infrastructure"), QString("AboveGroundInfrastructure"), QString("AboveGroundInfrastructure"), QString(), this);
 
     // auto csvAboveGroundInventory = new PointAssetInputWidget(this, theVisualizationWidget, "Above Ground Gas Infrastructures","Above ground infrastructure");
     auto csvAboveGroundInventory = new CSVAboveGroundGasComponentInputWidget(this, theVisualizationWidget, "Above Ground Gas Infrastructures","Above ground infrastructure");
@@ -149,7 +158,7 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
     theAboveGroundInfWidget->addComponent(QString("GIS to Above Ground Infrastructure"), QString("GIS_to_ABOVE_GROUND"), gisAboveGroundInventory);
 
     // Wells and caprocks
-    theWellsCaprocksWidget = new SimCenterAppSelection(QString("Wells and Caprocks"), QString("Assets"), QString("Wells and Caprocks"), QString(), this);
+    theWellsCaprocksWidget = new SimCenterAppSelection(QString("Wells and Caprocks"), QString("WellsCaprocks"), QString("WellsCaprocks"), QString(), this);
 
     auto csvWellsCaprocksWidgetInventory = new CSVWellsCaprocksInputWidget(this, theVisualizationWidget, "Wells and Caprocks","Wells and Caprocks");
     theWellsCaprocksWidget->addComponent(QString("CSV to Wells and Caprocks"), QString("CSV_to_WELLS_CAPROCKS"), csvWellsCaprocksWidgetInventory);
@@ -161,8 +170,10 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
     this->addComponent("Wells and Caprocks", theWellsCaprocksWidget);
     this->addComponent("Above Ground\nGas Infrastructure", theAboveGroundInfWidget);
 
+#ifdef OpenSRA
     auto testInputWidget = new LineAssetInputWidget(this, theVisualizationWidget, "Test","Test");
     this->addComponent("Future Infrastructure\n(Not Functional)", testInputWidget);
+#endif
 
     //    vectorOfComponents.append(gasPipelineWidget);
     //    vectorOfComponents.append(theWellsCaprocksWidget);
@@ -171,17 +182,24 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
 
     this->show("Pipelines");
 
+#ifdef OpenSRA
     auto colDelegate = WorkflowAppOpenSRA::getInstance()->getTheRandomVariableWidget()->getColDataComboDelegate();
+#else
+    auto colDelegate = WorkflowAppR2D::getInstance()->getTheRandomVariableWidget()->getColDataComboDelegate();
+#endif
 
     assert(colDelegate);
 
     connect(csvBelowGroundInputWidget, &AssetInputWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
     connect(gisGasNetworkInventory, &GISGasNetworkInputWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
+
+#ifdef OpenSRA
     connect(statewideBelowGroundInputWidget, &StateWidePipelineWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
     connect(bayareaBelowGroundInputWidget, &BayAreaPipelineWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
     connect(losangelesBelowGroundInputWidget, &LosAngelesPipelineWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
     connect(ndaStatewideBelowGroundInputWidget, &NDAStateWidePipelineWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
     connect(ndaBayareaBelowGroundInputWidget, &NDABayAreaPipelineWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
+#endif
 
     connect(csvWellsCaprocksWidgetInventory, &AssetInputWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
     connect(csvAboveGroundInventory, &AssetInputWidget::headingValuesChanged, colDelegate, &MixedDelegate::updateComboBoxValues);
@@ -206,6 +224,7 @@ PipelineNetworkWidget::~PipelineNetworkWidget()
 bool PipelineNetworkWidget::outputToJSON(QJsonObject &jsonObject)
 {
 
+#ifdef OpenSRA
     auto currCompIndex = this->getCurrentIndex();
 
     if (currCompIndex < 0)
@@ -252,17 +271,113 @@ bool PipelineNetworkWidget::outputToJSON(QJsonObject &jsonObject)
 
     jsonObject.insert("Infrastructure",infrastructureObj);
 
+#endif
 
     return true;
+}
+
+
+bool PipelineNetworkWidget::outputAppDataToJSON(QJsonObject &jsonObject)
+{
+    auto currCompIndex = this->getCurrentIndex();
+
+    if (currCompIndex < 0)
+        return false;
+
+    auto theCurrInputWidget = dynamic_cast<SimCenterAppSelection*>(this->getCurrentComponent());
+
+    if(theCurrInputWidget == nullptr)
+        return false;
+
+    auto typeOfInf = theCurrInputWidget->property("ComponentText").toString();
+
+    if(typeOfInf.isEmpty())
+    {
+        this->errorMessage("Error getting the type of infrastructure");
+        return false;
+    }
+
+    QString infraType;
+
+    if(typeOfInf.compare("Pipelines") == 0)
+        infraType = "NaturalGasPipelines";
+    else if(typeOfInf.compare("Above Ground\nGas Infrastructure") == 0)
+        infraType = "AboveGroundInfrastructure";
+    else if(typeOfInf.compare("Wells and Caprocks") == 0)
+        infraType = "WellsCaprocks";
+
+    QJsonObject compObj;
+    if(!theCurrInputWidget->outputAppDataToJSON(compObj))
+    {
+        this->errorMessage("Error in output to json for pipeline network asset "+infraType);
+        return false;
+    }
+
+    jsonObject[jsonKeyword] = compObj;
+
+    return true;
+}
+
+
+bool PipelineNetworkWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
+{
+
+    if (!jsonObject.contains(jsonKeyword))
+    {
+        this->errorMessage("Missing the json keyword "+jsonKeyword+" in input file");
+        return false;
+    }
+
+    auto gasNetworkObj = jsonObject[jsonKeyword].toObject();
+
+    QStringList keys = gasNetworkObj.keys();
+    if (keys.size() == 1) {
+        QString onlyKey = keys.at(0);
+
+        if (onlyKey == "NaturalGasPipelines")
+        {
+            auto name = "Pipelines";
+            auto comp = this->getComponent(name);
+
+            return comp->inputAppDataFromJSON(gasNetworkObj);
+        }
+        else if (onlyKey == "WellsCaprocks")
+        {
+            auto name = "Wells and Caprocks";
+            auto comp = this->getComponent(name);
+
+            return comp->inputAppDataFromJSON(gasNetworkObj);
+        }
+        else if (onlyKey == "AboveGroundInfrastructure")
+        {
+            auto name = "Above Ground\nGas Infrastructure";
+            auto comp = this->getComponent(name);
+
+            return comp->inputAppDataFromJSON(gasNetworkObj);
+        }
+        else
+        {
+            this->errorMessage("Received an unsupported infrastructure type "+onlyKey + " in the natural gas network object.");
+        }
+
+    } else {
+        this->errorMessage("The pipeline network analysis only supports one type of network infrastructure at a time");
+    }
+
+
+
+    return false;
 }
 
 
 bool PipelineNetworkWidget::inputFromJSON(QJsonObject &jsonObject)
 {
 
+#ifdef OpenSRA
+    QString osraType;
+
     auto typeOfInf = jsonObject["InfrastructureType"].toString();
 
-    QString osraType;
 
     if(typeOfInf.compare("below_ground") == 0)
         osraType = "Pipelines";
@@ -381,6 +496,12 @@ bool PipelineNetworkWidget::inputFromJSON(QJsonObject &jsonObject)
 
     return compWidget->inputFromJSON(jsonObject);
 
+    return true;
+#else
+
+    return MultiComponentR2D::inputFromJSON(jsonObject);
+
+#endif
 }
 
 
@@ -395,12 +516,12 @@ bool PipelineNetworkWidget::copyFiles(QString &destDir)
 
     return true;
 
-//    auto theCurrInputWidget = this->getCurrentComponent();
+    //    auto theCurrInputWidget = this->getCurrentComponent();
 
-//    if(theCurrInputWidget == nullptr)
-//        return false;
+    //    if(theCurrInputWidget == nullptr)
+    //        return false;
 
-//    return theCurrInputWidget->copyFiles(destDir);
+    //    return theCurrInputWidget->copyFiles(destDir);
 }
 
 

@@ -40,7 +40,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "SimCenterJsonWidget.h"
 #include "sectiontitle.h"
 #include "SimCenterComponentSelection.h"
-#include "WorkflowAppOpenSRA.h"
 
 #include <QListWidget>
 #include <QGroupBox>

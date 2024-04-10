@@ -40,7 +40,12 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "RVTableView.h"
 #include "RVTableModel.h"
 #include "CSVReaderWriter.h"
+#ifdef OpenSRA
 #include "OpenSRAPreferences.h"
+#else
+#include "SimCenterPreferences.h"
+#endif
+
 
 #include "ComboBoxDelegate.h"
 #include "sectiontitle.h"
@@ -350,7 +355,12 @@ bool GenericModelWidget::outputToJSON(QJsonObject &jsonObj) {
         genModCatAbbr = "DV";
 
     // build path and file name for CSV export
+#ifdef OpenSRA
     QString fileDir = OpenSRAPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "Input";
+#else
+    QString fileDir = SimCenterPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "Input";
+#endif
+
     QFileInfo fileDirInfo(fileDir);
     fileDirInfo.setFile(fileDir);
     if (!fileDirInfo.exists())
@@ -578,7 +588,12 @@ bool GenericModelWidget::inputFromJSON(QJsonObject &jsonObj)
         if (!filePathInfo.exists())
         {
             // first try using work_dir/Input as reference
+#ifdef OpenSRA
             filePath = OpenSRAPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "Input" + filePath;
+#else
+            filePath = SimCenterPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "Input" + filePath;
+#endif
+
         }
         filePathInfo.setFile(filePath);
         filePathInfo.setFile(filePath);

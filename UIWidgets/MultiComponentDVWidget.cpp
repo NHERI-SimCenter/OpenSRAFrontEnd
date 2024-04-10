@@ -32,7 +32,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "MultiComponentDVWidget.h"
 #include "SimCenterJsonWidget.h"
+#ifdef OpenSRA
 #include "WorkflowAppOpenSRA.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 #include "DecisionVariableWidget.h"
 
 #include "sectiontitle.h"
@@ -70,7 +74,11 @@ MultiComponentDVWidget::MultiComponentDVWidget(QWidget *parent) : MultiComponent
 
     theMainLayout->insertLayout(0,theHeaderLayout);
 
+#ifdef OpenSRA
     auto mainObj = WorkflowAppOpenSRA::getInstance()->getMethodsAndParamsObj();
+#else
+    auto mainObj = WorkflowAppR2D::getInstance()->getMethodsAndParamsObj();
+#endif
 
     auto belowGroundObj = mainObj.value("BelowGround").toObject();
 
@@ -144,15 +152,15 @@ bool MultiComponentDVWidget::inputFromJSON(QJsonObject &jsonObject)
 
 bool MultiComponentDVWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 {
-    Q_UNUSED(jsonObject);
-    return true;
+    return this->outputToJSON(jsonObject);
 }
 
 
 bool MultiComponentDVWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    Q_UNUSED(jsonObject);
-    return true;
+    auto keyJsonObj = jsonObject[jsonKeyword].toObject();
+
+    return this->inputFromJSON(keyJsonObj);
 }
 
 

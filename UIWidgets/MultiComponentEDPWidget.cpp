@@ -33,7 +33,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "MultiComponentEDPWidget.h"
 #include "EDPLandslideWidget.h"
 #include "SimCenterJsonWidget.h"
+#ifdef OpenSRA
 #include "WorkflowAppOpenSRA.h"
+#else
+#include "WorkflowAppR2D.h"
+#endif
 #include "EngineeringDemandParameterWidget.h"
 
 #include "sectiontitle.h"
@@ -71,7 +75,11 @@ MultiComponentEDPWidget::MultiComponentEDPWidget(QWidget *parent) : MultiCompone
 
     theMainLayout->insertLayout(0,theHeaderLayout);
 
+#ifdef OpenSRA
     auto mainObj = WorkflowAppOpenSRA::getInstance()->getMethodsAndParamsObj();
+#else
+    auto mainObj = WorkflowAppR2D::getInstance()->getMethodsAndParamsObj();
+#endif
 
     auto belowGroundObj = mainObj.value("BelowGround").toObject();
 
@@ -145,15 +153,15 @@ bool MultiComponentEDPWidget::inputFromJSON(QJsonObject &jsonObject)
 
 bool MultiComponentEDPWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 {
-    Q_UNUSED(jsonObject);
-    return true;
+    return this->outputToJSON(jsonObject);
 }
 
 
 bool MultiComponentEDPWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    Q_UNUSED(jsonObject);
-    return true;
+    auto keyJsonObj = jsonObject[jsonKeyword].toObject();
+
+    return this->inputFromJSON(keyJsonObj);
 }
 
 

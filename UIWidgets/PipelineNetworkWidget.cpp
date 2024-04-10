@@ -452,7 +452,7 @@ bool PipelineNetworkWidget::inputFromJSON(QJsonObject &jsonObject)
             if (fileName.contains("full"))
                 app = "Use NDA Pipeline Network - Statewide";
             else if (fileName.contains("bayarea"))
-                app = "Use NDA Pipeline Network - Bay Area";
+                app = "Use NDA Pipeline Network - Cropped to Bay Area";
         }
 
     }

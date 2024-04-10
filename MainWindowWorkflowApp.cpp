@@ -7,6 +7,7 @@
 #include "Utils/dialogabout.h"
 #include "Utils/ProgramOutputDialog.h"
 #include "Utils/EventFilter.h"
+#include "WorkflowAppOpenSRA.h"
 
 #include <QTreeView>
 #include <QDockWidget>
@@ -208,6 +209,7 @@ bool MainWindowWorkflowApp::saveAs()
 
 void MainWindowWorkflowApp::openConfigJson()
 {
+    WorkflowAppOpenSRA::getInstance()->clear();
     auto openDir = this->thePreferences->getLocalWorkDir() + QDir::separator() + "Input";
     QFileInfo openDirStatus(openDir);
     if (!openDirStatus.exists())
@@ -220,6 +222,7 @@ void MainWindowWorkflowApp::openConfigJson()
 
 void MainWindowWorkflowApp::openRunFolder()
 {
+    WorkflowAppOpenSRA::getInstance()->clear();
     auto openDir = this->thePreferences->getLocalWorkDir();
     QDir runDir = QFileDialog::getExistingDirectory(this, "Load from an existing analysis (working) folder", openDir, QFileDialog::ShowDirsOnly);
     // find SetupConfig.json from runDir

@@ -204,7 +204,7 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
             this->defPolyLineEdit->setText("CA_LandslideInventory_WGS84");
         });
 
-        auto defPolyLabel = new QLabel("Use a shapefile with deformation polygons (checked = yes)? Default: use the California Landslide Inventory");
+        auto defPolyLabel = new QLabel("Use a shapefile with deformation polygons (checked = yes)? Preferred: use the California Landslide Inventory");
 
         inputLayout->addWidget(defPolyLabel);
         inputLayout->addLayout(defPolyLayout);
@@ -333,6 +333,8 @@ void SimCenterJsonWidget::handleAddButtonPressed(void)
         addRunListWidget->outputToJSON(modObj);
 
         finalObj[key] = modObj;
+
+        addRunListWidget->outputToJSON(finalObj);
     }
 
     // qDebug()<<finalObj;

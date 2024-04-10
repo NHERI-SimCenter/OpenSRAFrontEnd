@@ -275,14 +275,18 @@ bool StateWidePipelineWidget::outputToJSON(QJsonObject &rvObject)
     auto assetFilePath = appData["pathToSource"].toString();
 
     QDir dirInfo(assetFilePath);
-    auto assetDirName = dirInfo.dirName();
+    auto assetDirName = dirInfo.absolutePath();
     auto pathToFile = assetDirName + QDir::separator() + assetFileName;
 
     //    auto pathToFile = assetFilePath + QDir::separator() + assetFileName;
 
     //    auto pathToFile = assetFileName;
 
-    rvObject.insert("SiteDataFile", pathToFile);
+    QFileInfo pathToFileInfo(pathToFile);
+    auto absPathToFile = pathToFileInfo.absoluteFilePath();
+
+//    rvObject.insert("SiteDataFile", pathToFile);
+    rvObject.insert("SiteDataFile", absPathToFile);
 
     if(!appData.contains("CRS"))
     {

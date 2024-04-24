@@ -394,6 +394,12 @@ void RandomVariablesWidget::clear(void)
 }
 
 
+bool RandomVariablesWidget::copyFiles(QString &destName)
+{
+    return outputToCsv(destName);
+}
+
+
 bool RandomVariablesWidget::outputToJSON(QJsonObject &jsonObject) {
 
     Q_UNUSED(jsonObject);

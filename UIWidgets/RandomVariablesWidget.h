@@ -59,6 +59,7 @@ public:
 
     bool inputFromJSON(QJsonObject &jsonObject);
     bool outputToJSON(QJsonObject &jsonObject);
+    bool copyFiles(QString &destName);
 
     void addRVs(QVector<RV>& RVs);
 

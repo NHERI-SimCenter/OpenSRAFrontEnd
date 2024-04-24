@@ -51,7 +51,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QLabel>
 
 
-PipelineDLWidget::PipelineDLWidget(QWidget *parent) : MultiComponentR2D("GasNetwork",parent)
+PipelineDLWidget::PipelineDLWidget(QWidget *parent) : MultiComponentR2D("OpenSRA",parent)
 {
     this->setContentsMargins(0,0,0,0);
 
@@ -114,7 +114,7 @@ bool PipelineDLWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 bool PipelineDLWidget::inputFromJSON(QJsonObject &/*jsonObject*/)
 {
 
-    return false;
+    return true;
 
 }
 

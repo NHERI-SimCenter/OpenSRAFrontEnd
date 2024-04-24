@@ -74,6 +74,7 @@ OpenSRAPostProcessor::OpenSRAPostProcessor(QWidget *parent, QGISVisualizationWid
 //            "  summed over all events";
     listWidget = new MutuallyExclusiveListWidget(this, resultHeaderString);
     listWidget->setWordWrap(true);
+    listWidget->hide();
 
     // initialize IM Source type for graduated renderer bin limits
     this->IMSourceType = "Not ShakeMap";
@@ -106,6 +107,8 @@ void OpenSRAPostProcessor::handleModifyLegend(void)
 
 int OpenSRAPostProcessor::importResultVisuals(const QString& pathToResults)
 {
+
+    listWidget->show();
 
     QFileInfo resultsDir(pathToResults);
 
@@ -202,6 +205,8 @@ void OpenSRAPostProcessor::importResults(const QString& pathToResults)
 void OpenSRAPostProcessor::clear(void)
 {
     listWidget->clear();
+    listWidget->hide();
+
     results_layers.clear();
 
     this->IMSourceType = "Not UCERF";
@@ -380,9 +385,15 @@ int OpenSRAPostProcessor::getSetupConfigParams(const QString& pathToResults)
     auto resultsPath = resultsPathInfo.absoluteDir().absolutePath();
     QFileInfo workPathInfo(resultsPath);
     auto workPath = workPathInfo.absoluteDir().absolutePath();
+#ifdef OpenSRA
     QString pathToSetupConfig = workPath +
             QDir::separator() + "Input" +
             QDir::separator() + "SetupConfig.json";
+#else
+    QString pathToSetupConfig = workPath +
+                                QDir::separator() + "input_data" +
+                                QDir::separator() + "SetupConfig.json";
+#endif
 
     // read from json file
     QFile jsonFile(pathToSetupConfig);

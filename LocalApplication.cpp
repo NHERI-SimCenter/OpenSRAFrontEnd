@@ -252,10 +252,19 @@ bool LocalApplication::setupDoneRunPreprocessing(QString &workingDir, QString &/
     QFileInfo pythonPath(python);
     auto condaPrefix = pythonPath.absoluteDir().absolutePath();
     procEnv.insert("CONDA_PREFIX", condaPrefix);
+
+
+#ifdef Q_OS_WIN
     QString projDataPath = condaPrefix + QDir::separator() + "Library" + QDir::separator() + "share" + QDir::separator() + "proj";
     procEnv.insert("PROJ_DATA", projDataPath);
     QString gdalDataPath = condaPrefix + QDir::separator() + "Library" + QDir::separator() + "share" + QDir::separator() + "gdal";
     procEnv.insert("GDAL_DATA", gdalDataPath);
+#else
+    QString projDataPath = condaPrefix + QDir::separator() + "Library" + QDir::separator() + "share" + QDir::separator() + "proj";
+    procEnv.insert("PROJ_DATA", projDataPath);
+    QString gdalDataPath = condaPrefix + QDir::separator() + "Library" + QDir::separator() + "share" + QDir::separator() + "gdal";
+    procEnv.insert("GDAL_DATA", gdalDataPath);
+#endif
 
     // Add some env var from system
     procEnv.insert("PROCESSOR_ARCHITECTURE", qgetenv("PROCESSOR_ARCHITECTURE"));

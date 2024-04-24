@@ -260,7 +260,7 @@ bool PipelineNetworkWidget::outputToJSON(QJsonObject &jsonObject)
 
     theCurrInputWidget->outputToJSON(compObj);
 
-    auto assetObj = compObj.value("Assets").toObject();
+    QJsonObject assetObj = compObj.value(theCurrInputWidget->getJsonKeyword()).toObject();
 
     foreach (auto&& key, assetObj.keys())
     {
@@ -514,14 +514,18 @@ bool PipelineNetworkWidget::copyFiles(QString &destDir)
     -> this is a problem embedded in SimCenter commons. For OpenSRA, turn off copy of files for component and have program always refer to original source
     */
 
+#ifdef OpenSRA
     return true;
+#else
 
-    //    auto theCurrInputWidget = this->getCurrentComponent();
+    auto theCurrInputWidget = this->getCurrentComponent();
 
-    //    if(theCurrInputWidget == nullptr)
-    //        return false;
+    if(theCurrInputWidget == nullptr)
+        return false;
 
-    //    return theCurrInputWidget->copyFiles(destDir);
+    return theCurrInputWidget->copyFiles(destDir);
+#endif
+
 }
 
 

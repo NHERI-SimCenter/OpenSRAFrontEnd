@@ -92,6 +92,7 @@ private:
 
     QLineEdit *defPolyLineEdit;
     QCheckBox* defPolyCheckBox;
+    QCheckBox* strainPreloadCheckBox;
 
 };
 

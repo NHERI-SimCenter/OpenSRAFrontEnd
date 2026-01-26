@@ -36,7 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Dr. Stevan Gavrilovic, UC Berkeley
 
-#include "UIWidgets/GeneralInformationWidget.h"
+#include "GeneralInformationWidget.h"
 #include "OpenSRAPreferences.h"
 #include "sectiontitle.h"
 #include "ClickableLabel.h"

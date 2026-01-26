@@ -411,6 +411,9 @@ QJsonObject WorkflowAppOpenSRA::getMethodAndParamsObj(const QString& path, bool 
         {
             auto obj = objIt.value().toObject();
 
+            if (obj["NameToDisplay"].toString() == "Use Embedded Strain")
+                auto a = 1;
+
             auto name = obj["ToDisplay"].toString();
             if(!name.isEmpty())
             {

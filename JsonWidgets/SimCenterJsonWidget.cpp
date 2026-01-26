@@ -145,8 +145,26 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
 
     //
     //-----
-    // widget for additional landslide parameters for deformation polygons to use
+    // additional widgets dependent on geohazard
     nameToDisplay = jsonObj.value("NameToDisplay").toString();
+
+    // widget for additional landslide parameters for deformation polygons to use
+    if(nameToDisplay == "Landslide Induced Pipe Strain")
+    {
+        QVBoxLayout* inputLayout = new QVBoxLayout();
+        inputLayout->setMargin(0);
+
+        auto strainPreloadLabel = new QLabel("Apply strain preloading (checked = yes)?");
+        strainPreloadCheckBox = new QCheckBox("Note: Infrastructure file must include columns with strains and labeled using FID number in landslide inventory (e.g., e%[FID], where [FID] is the landslide FID)");
+        strainPreloadCheckBox->setChecked(false);
+
+        inputLayout->addWidget(strainPreloadLabel);
+        inputLayout->addWidget(strainPreloadCheckBox);
+        groupBoxLayout->addLayout(inputLayout,Qt::AlignCenter);
+
+    }
+
+    // widget for additional landslide parameters for deformation polygons to use
     if(nameToDisplay == "Landslide")
     {
 
@@ -435,6 +453,14 @@ bool SimCenterJsonWidget::outputToJSON(QJsonObject &jsonObj)
         outputObj["OtherParameters"] = defPolyObj;
     }
 
+    // Pipe Strain by Landslide only
+    if(this->nameToDisplay == "Landslide Induced Pipe Strain")
+    {
+        QJsonObject strainPreloadObj;
+        strainPreloadObj["UseStrainPreload"] = strainPreloadCheckBox->isChecked();
+        outputObj["OtherParameters"] = strainPreloadObj;
+    }
+
     // for generic models, run its own version of outputToJSON
     if (methodsObj.contains("GenericModel"))
     {
@@ -684,6 +710,20 @@ bool SimCenterJsonWidget::inputFromJSON(QJsonObject &jsonObject)
             {
                 auto defPolyPath = landslideParams["SourceForDeformationGeometry"].toString();
                 defPolyLineEdit->setText(defPolyPath);
+            }
+        }
+    }
+
+    // pipe strain by landslide only
+    if(this->nameToDisplay == "Landslide Induced Pipe Strain")
+    {
+        if (jsonObject.contains("OtherParameters"))
+        {
+            QJsonObject pipeStrainLandslideParams = jsonObject["OtherParameters"].toObject();
+            if (pipeStrainLandslideParams.contains("UseStrainPreload"))
+            {
+                auto strainPreloadCheckState = pipeStrainLandslideParams["UseStrainPreload"].toBool();
+                strainPreloadCheckBox->setChecked(strainPreloadCheckState);
             }
         }
     }

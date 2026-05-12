@@ -92,7 +92,11 @@ private:
 
     QLineEdit *defPolyLineEdit;
     QCheckBox* defPolyCheckBox;
-    QCheckBox* strainPreloadCheckBox;
+    QCheckBox* strainLandslideCheckBox;
+    QCheckBox* strainFaultRuptureCheckBox;
+    QCheckBox* bufferCheckBox;
+    QLineEdit *bufferPrimaryLineEdit;
+    QLineEdit *bufferSecondaryLineEdit;
 
 };
 

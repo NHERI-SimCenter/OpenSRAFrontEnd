@@ -154,12 +154,53 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
         QVBoxLayout* inputLayout = new QVBoxLayout();
         inputLayout->setMargin(0);
 
-        auto strainPreloadLabel = new QLabel("Apply strain preloading (checked = yes)?");
-        strainPreloadCheckBox = new QCheckBox("Note: Infrastructure file must include columns with strains and labeled using FID number in landslide inventory (e.g., e%[FID], where [FID] is the landslide FID)");
-        strainPreloadCheckBox->setChecked(false);
+        strainLandslideCheckBox = new QCheckBox("1) Consider strain preloading (checked = yes)?");
+        strainLandslideCheckBox->setChecked(false);
 
-        inputLayout->addWidget(strainPreloadLabel);
-        inputLayout->addWidget(strainPreloadCheckBox);
+        inputLayout->addWidget(strainLandslideCheckBox);
+        groupBoxLayout->addLayout(inputLayout,Qt::AlignCenter);
+
+    }
+    if(nameToDisplay == "Fault Rupture Induced Pipe Strain")
+    {
+        QVBoxLayout* inputLayout = new QVBoxLayout();
+        inputLayout->setMargin(0);
+
+        QHBoxLayout* bufferLayout = new QHBoxLayout();
+        bufferLayout->setMargin(0);
+        bufferCheckBox = new QCheckBox("1) Increase buffer on fault traces?");
+        bufferCheckBox->setChecked(false);
+        auto bufferPrimaryLabel = new QLabel("Buffer for Primary Hazard (m):");
+        bufferPrimaryLineEdit = new QLineEdit();
+        bufferPrimaryLineEdit->setEnabled(false);
+        bufferPrimaryLineEdit->setText("100");
+        auto bufferSecondaryLabel = new QLabel("Buffer for Secondary Hazard (m):");
+        bufferSecondaryLineEdit = new QLineEdit();
+        bufferSecondaryLineEdit->setEnabled(false);
+        bufferSecondaryLineEdit->setText("100");
+        bufferLayout->addWidget(bufferCheckBox);
+        bufferLayout->addWidget(bufferPrimaryLabel);
+        bufferLayout->addWidget(bufferPrimaryLineEdit);
+        bufferLayout->addWidget(bufferSecondaryLabel);
+        bufferLayout->addWidget(bufferSecondaryLineEdit);
+
+        connect(bufferCheckBox, &QCheckBox::toggled, this, [this](bool checked)
+        {
+            this->bufferPrimaryLineEdit->setEnabled(checked);
+            if (!checked) {
+                this->bufferPrimaryLineEdit->setText("100");
+            }
+            this->bufferSecondaryLineEdit->setEnabled(checked);
+            if (!checked) {
+                this->bufferSecondaryLineEdit->setText("100");
+            }
+        });
+
+        strainFaultRuptureCheckBox = new QCheckBox("2) Consider strain preloading (checked = yes)?");
+        strainFaultRuptureCheckBox->setChecked(false);
+
+        inputLayout->addLayout(bufferLayout);
+        inputLayout->addWidget(strainFaultRuptureCheckBox);
         groupBoxLayout->addLayout(inputLayout,Qt::AlignCenter);
 
     }
@@ -456,9 +497,25 @@ bool SimCenterJsonWidget::outputToJSON(QJsonObject &jsonObj)
     // Pipe Strain by Landslide only
     if(this->nameToDisplay == "Landslide Induced Pipe Strain")
     {
-        QJsonObject strainPreloadObj;
-        strainPreloadObj["UseStrainPreload"] = strainPreloadCheckBox->isChecked();
-        outputObj["OtherParameters"] = strainPreloadObj;
+        QJsonObject strainObj;
+        strainObj["UseStrainPreload"] = strainLandslideCheckBox->isChecked();
+        outputObj["OtherParameters"] = strainObj;
+    }
+    // Pipe Strain by Fault Rupture only
+    if(this->nameToDisplay == "Fault Rupture Induced Pipe Strain")
+    {
+        QJsonObject strainObj;
+        strainObj["IncreaseBuffer"] = bufferCheckBox->isChecked();
+        if (bufferCheckBox->isChecked())
+        {
+            strainObj["BufferSizePrimary"] = bufferPrimaryLineEdit->text().toDouble();
+            strainObj["BufferSizeSecondary"] = bufferSecondaryLineEdit->text().toDouble();
+        } else {
+            strainObj["BufferSizePrimary"] = 1.0;
+            strainObj["BufferSizeSecondary"] = 100.0;
+        }
+        strainObj["UseStrainPreload"] = strainFaultRuptureCheckBox->isChecked();
+        outputObj["OtherParameters"] = strainObj;
     }
 
     // for generic models, run its own version of outputToJSON
@@ -719,11 +776,36 @@ bool SimCenterJsonWidget::inputFromJSON(QJsonObject &jsonObject)
     {
         if (jsonObject.contains("OtherParameters"))
         {
-            QJsonObject pipeStrainLandslideParams = jsonObject["OtherParameters"].toObject();
-            if (pipeStrainLandslideParams.contains("UseStrainPreload"))
+            QJsonObject strainParams = jsonObject["OtherParameters"].toObject();
+            if (strainParams.contains("UseStrainPreload"))
             {
-                auto strainPreloadCheckState = pipeStrainLandslideParams["UseStrainPreload"].toBool();
-                strainPreloadCheckBox->setChecked(strainPreloadCheckState);
+                auto strainCheckState = strainParams["UseStrainPreload"].toBool();
+                strainLandslideCheckBox->setChecked(strainCheckState);
+            }
+        }
+    }
+    // pipe strain by fault rupture only
+    if(this->nameToDisplay == "Fault Rupture Induced Pipe Strain")
+    {
+        if (jsonObject.contains("OtherParameters"))
+        {
+            QJsonObject strainParams = jsonObject["OtherParameters"].toObject();
+            if (strainParams.contains("IncreaseBuffer"))
+            {
+                auto bufferCheckState = strainParams["IncreaseBuffer"].toBool();
+                bufferCheckBox->setChecked(bufferCheckState);
+                if (bufferCheckState)
+                {
+                    auto bufferPrimaryInput = QString::number(strainParams["BufferSizePrimary"].toDouble());
+                    bufferPrimaryLineEdit->setText(bufferPrimaryInput);
+                    auto bufferSecondaryInput = QString::number(strainParams["BufferSizeSecondary"].toDouble());
+                    bufferSecondaryLineEdit->setText(bufferSecondaryInput);
+                }
+            }
+            if (strainParams.contains("UseStrainPreload"))
+            {
+                auto strainCheckState = strainParams["UseStrainPreload"].toBool();
+                strainFaultRuptureCheckBox->setChecked(strainCheckState);
             }
         }
     }

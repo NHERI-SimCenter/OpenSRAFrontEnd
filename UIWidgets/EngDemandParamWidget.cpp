@@ -54,7 +54,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 EngDemandParamWidget::EngDemandParamWidget(QJsonObject mainObj, QWidget *parent) : SimCenterAppWidget(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->setContentsMargins(5,0,0,0);
 

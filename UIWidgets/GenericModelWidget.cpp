@@ -65,7 +65,7 @@ GenericModelWidget::GenericModelWidget(QString parName, QJsonObject &methodObj, 
 {
     this->setObjectName("Generic Model Widget of "+parName);
     verticalLayout = new QVBoxLayout(this);
-    verticalLayout->setMargin(2);
+    verticalLayout->setContentsMargins(2, 2, 2, 2);
     verticalLayout->setSpacing(2);
     this->makeRVWidget(methodObj);
 
@@ -193,7 +193,7 @@ void GenericModelWidget::makeRVWidget(QJsonObject &methodObj)
     // model definition table
     // title & add button
     QHBoxLayout *titleLayout = new QHBoxLayout();
-    //titleLayout->setMargin(10);
+    //titleLayout->setContentsMargins(10, 10, 10, 10);
 
     SectionTitle *title=new SectionTitle();
     title->setText(tr("Generic Model Definition"));

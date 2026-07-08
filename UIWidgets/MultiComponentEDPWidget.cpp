@@ -59,7 +59,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 MultiComponentEDPWidget::MultiComponentEDPWidget(QWidget *parent) : MultiComponentR2D("EngineeringDemandParameter",parent)
 {
-    theMainLayout->setMargin(0);
+    theMainLayout->setContentsMargins(0, 0, 0, 0);
     theMainLayout->setSpacing(0);
     theMainLayout->setContentsMargins(5,0,0,0);
 
@@ -159,7 +159,7 @@ bool MultiComponentEDPWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 
 bool MultiComponentEDPWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    auto keyJsonObj = jsonObject[jsonKeyword].toObject();
+    auto keyJsonObj = jsonObject[QStringLiteral("EngineeringDemandParameter")].toObject();
 
     return this->inputFromJSON(keyJsonObj);
 }

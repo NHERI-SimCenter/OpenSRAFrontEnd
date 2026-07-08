@@ -73,14 +73,14 @@ EDPLandslideWidget::EDPLandslideWidget(QJsonObject obj, QWidget* parent) : SimCe
     connect(listWidget,&QAbstractItemView::clicked,this,&EDPLandslideWidget::handleListItemSelected);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setContentsMargins(0,0,0,0);
 
     QWidget* mainWidget = new QWidget();
     mainWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
     QVBoxLayout* inputLayout = new QVBoxLayout(mainWidget);
-    inputLayout->setMargin(0);
+    inputLayout->setContentsMargins(0, 0, 0, 0);
     inputLayout->setContentsMargins(5,0,0,0);
 
     auto boxWidget = this->getWidgetBox(obj);
@@ -213,14 +213,14 @@ QWidget* EDPLandslideWidget::getWidgetBox(QJsonObject& obj)
     QWidget* yieldAccWidget = new QWidget();
 
     QHBoxLayout* yieldAccLayout = new QHBoxLayout(yieldAccWidget);
-    yieldAccLayout->setMargin(0);
+    yieldAccLayout->setContentsMargins(0, 0, 0, 0);
     yieldAccLayout->addWidget(yieldAccMethodWidget);
     yieldAccLayout->addWidget(yieldAccParametersWidget);
     yieldAccLayout->setStretch(0,1);
     yieldAccLayout->setStretch(1,1);
 
     QVBoxLayout* inputLayout = new QVBoxLayout();
-    inputLayout->setMargin(0);
+    inputLayout->setContentsMargins(0, 0, 0, 0);
     inputLayout->addWidget(methodWidget);
     inputLayout->addWidget(yieldAccWidget);
 //    inputLayout->setStretch(0,1);
@@ -398,7 +398,7 @@ JsonWidget* EDPLandslideWidget::getYieldMethodWidget(const QJsonObject& obj)
     kyWidget->setObjectName(methodKyStr);
 
     QVBoxLayout* kyWidgetLayout = new QVBoxLayout(yieldMethodWidget);
-    kyWidgetLayout->setMargin(0);
+    kyWidgetLayout->setContentsMargins(0, 0, 0, 0);
 
     kyWidgetLayout->addWidget(widgetLabel);
     kyWidgetLayout->addWidget(kyWidget);

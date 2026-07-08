@@ -62,7 +62,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 RandomVariablesWidget::RandomVariablesWidget(QWidget *parent) : SimCenterAppWidget(parent)
 {
     verticalLayout = new QVBoxLayout(this);
-    verticalLayout->setMargin(2);
+    verticalLayout->setContentsMargins(2, 2, 2, 2);
     verticalLayout->setSpacing(2);
 
     RVTableHeaders = QStringList({"Name","Description","Source","Distribution Type","Mean or Median","Sigma","CoV","Distribution Min","Distribution Max","From Model"});
@@ -108,7 +108,7 @@ void RandomVariablesWidget::makeRVWidget(void)
 
     // title & add button
     QHBoxLayout *titleLayout = new QHBoxLayout();
-    //titleLayout->setMargin(10);
+    //titleLayout->setContentsMargins(10, 10, 10, 10);
 
     SectionTitle *title=new SectionTitle();
     title->setText(tr("Input Variables"));

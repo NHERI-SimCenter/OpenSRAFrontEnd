@@ -1,3 +1,8 @@
 # Sensitive Information
 OpenSRAUserPass.h
 *.pro.user
+
+# CMake / Conan build output (Qt6/QGIS4 migration)
+build/
+CMakeUserPresets.json
+*.log

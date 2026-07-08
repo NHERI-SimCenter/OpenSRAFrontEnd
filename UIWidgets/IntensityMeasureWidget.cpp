@@ -37,6 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Stevan Gavrilovic
 
 #include "IntensityMeasureWidget.h"
+#include "QGISVisualizationWidget.h"
 #include "sectiontitle.h"
 #include "OpenSHAWidget.h"
 #include "ShakeMapWidget.h"
@@ -84,12 +85,12 @@ IntensityMeasureWidget::IntensityMeasureWidget(QGISVisualizationWidget* visWidge
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(0);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setContentsMargins(5,0,0,0);
 
     QHBoxLayout *theHeaderLayout = new QHBoxLayout();
     theHeaderLayout->setContentsMargins(0,0,0,0);
-    theHeaderLayout->setMargin(0);
+    theHeaderLayout->setContentsMargins(0, 0, 0, 0);
     theHeaderLayout->setSpacing(0);
     SectionTitle *label = new SectionTitle();
     label->setText(QString("Intensity Measure (IM)"));
@@ -116,7 +117,7 @@ IntensityMeasureWidget::IntensityMeasureWidget(QGISVisualizationWidget* visWidge
     mainPanel = new QStackedWidget();
     mainPanel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     mainPanel->setContentsMargins(5,0,0,0);
-    mainPanel->layout()->setMargin(0);
+    mainPanel->layout()->setContentsMargins(0, 0, 0, 0);
     mainPanel->layout()->setSpacing(0);
 
     mainPanel->addWidget(openSHA);

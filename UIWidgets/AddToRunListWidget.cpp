@@ -60,7 +60,7 @@ AddToRunListWidget::AddToRunListWidget(QWidget* parent) : QWidget(parent)
         "Combining multiple methods may not be necessarily yield a model that is (log)normally distributed. Please limit to using just one method."
     );
     warningLabel->setWordWrap(true);
-    warningLayout->setMargin(0);
+    warningLayout->setContentsMargins(0, 0, 0, 0);
     warningLayout->addWidget(warningLabel);
 
     auto weightLabel = new QLabel("Model Weight:");
@@ -90,7 +90,7 @@ AddToRunListWidget::AddToRunListWidget(QWidget* parent) : QWidget(parent)
 
     QHBoxLayout* inputLayout = new QHBoxLayout();
 
-    inputLayout->setMargin(0);
+    inputLayout->setContentsMargins(0, 0, 0, 0);
     inputLayout->addWidget(weightLabel);
     inputLayout->addWidget(weightLineEdit);
 
@@ -109,7 +109,7 @@ AddToRunListWidget::AddToRunListWidget(QWidget* parent) : QWidget(parent)
     connect(addRunListButton,&QPushButton::clicked, this, [=](){emit addToRunListButtonPressed();});
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     mainLayout->addItem(smallVSpacer);
 

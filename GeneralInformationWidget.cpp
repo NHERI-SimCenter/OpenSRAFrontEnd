@@ -62,7 +62,7 @@ GeneralInformationWidget::GeneralInformationWidget(QWidget *parent) : SimCenterA
 {
 
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->setContentsMargins(5,0,0,0);
 
@@ -113,8 +113,15 @@ bool GeneralInformationWidget::outputToJSON(QJsonObject &jsonObj)
 
     QDir workDir(workingDirectoryLineEdit->text());
     directoryObj.insert("Working",workDir.absolutePath());
-    directoryObj.insert("OpenSRAData",OpenSRAPreferences::getInstance()->getAppDataDir());
-    directoryObj.insert("NDAData",OpenSRAPreferences::getInstance()->getNDADataDir());
+    // OpenSRA datasets folder (Preferences); kept in a variable so NDAData can be compared to it.
+    auto openSRAData = OpenSRAPreferences::getInstance()->getAppDataDir();
+    // Emit OpenSRAData unchanged (only refactored from the original one-liner to reuse the variable).
+    directoryObj.insert("OpenSRAData", openSRAData);
+    // NDA datasets folder (Preferences); this field defaults blank or to the OpenSRAData folder.
+    auto ndaData = OpenSRAPreferences::getInstance()->getNDADataDir();
+    // Emit NDAData only when non-empty AND distinct, else the backend merges the dataset folder
+    // with itself and crashes; a genuine prepackaged-NDA folder is still preserved.
+    if(!ndaData.isEmpty() && ndaData != openSRAData) directoryObj.insert("NDAData", ndaData);
 
     outputObj.insert("AnalysisID",analysisLineEdit->text());
 //    outputObj.insert("UnitSystem",unitsCombo->currentText());

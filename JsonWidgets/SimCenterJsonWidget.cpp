@@ -95,7 +95,7 @@ SimCenterJsonWidget::SimCenterJsonWidget(QString methodName, QJsonObject jsonObj
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0,0,0,0);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     auto mainWidget = this->getWidgetBox(jsonObj);
 
@@ -152,7 +152,7 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
     if(nameToDisplay == "Landslide Induced Pipe Strain")
     {
         QVBoxLayout* inputLayout = new QVBoxLayout();
-        inputLayout->setMargin(0);
+        inputLayout->setContentsMargins(0, 0, 0, 0);
 
         strainLandslideCheckBox = new QCheckBox("1) Consider strain preloading (checked = yes)?");
         strainLandslideCheckBox->setChecked(false);
@@ -164,10 +164,10 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
     if(nameToDisplay == "Fault Rupture Induced Pipe Strain")
     {
         QVBoxLayout* inputLayout = new QVBoxLayout();
-        inputLayout->setMargin(0);
+        inputLayout->setContentsMargins(0, 0, 0, 0);
 
         QHBoxLayout* bufferLayout = new QHBoxLayout();
-        bufferLayout->setMargin(0);
+        bufferLayout->setContentsMargins(0, 0, 0, 0);
         bufferCheckBox = new QCheckBox("1) Increase buffer on fault traces?");
         bufferCheckBox->setChecked(false);
         auto bufferPrimaryLabel = new QLabel("Buffer for Primary Hazard (m):");
@@ -210,7 +210,7 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
     {
 
         QVBoxLayout* inputLayout = new QVBoxLayout();
-        inputLayout->setMargin(0);
+        inputLayout->setContentsMargins(0, 0, 0, 0);
 
         // widget for additional landslide parameters for deformation polygons to use
         defPolyLineEdit = new QLineEdit();

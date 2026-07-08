@@ -58,7 +58,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 MultiComponentDVWidget::MultiComponentDVWidget(QWidget *parent) : MultiComponentR2D("DecisionVariable",parent)
 {
-    theMainLayout->setMargin(0);
+    theMainLayout->setContentsMargins(0, 0, 0, 0);
     theMainLayout->setSpacing(0);
     theMainLayout->setContentsMargins(5,0,0,0);
 
@@ -158,7 +158,7 @@ bool MultiComponentDVWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 
 bool MultiComponentDVWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    auto keyJsonObj = jsonObject[jsonKeyword].toObject();
+    auto keyJsonObj = jsonObject[QStringLiteral("DecisionVariable")].toObject();
 
     return this->inputFromJSON(keyJsonObj);
 }

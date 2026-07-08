@@ -106,7 +106,7 @@ CustomVisualizationWidget::CustomVisualizationWidget(QGISVisualizationWidget* vi
     theLeftHandWidget->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Expanding);
 
     QVBoxLayout *theLeftHandLayout = new QVBoxLayout(theLeftHandWidget);
-    theLeftHandLayout->setMargin(0);
+    theLeftHandLayout->setContentsMargins(0, 0, 0, 0);
 
     theLeftHandLayout->addWidget(visSelectBox);
 
@@ -135,7 +135,7 @@ CustomVisualizationWidget::CustomVisualizationWidget(QGISVisualizationWidget* vi
     auto buttonHandle = new QToolButton(handleLeft);
     QVBoxLayout *layout = new QVBoxLayout(handleLeft);
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     theVizLayout->setHandleWidth(15);
 
@@ -167,7 +167,7 @@ CustomVisualizationWidget::CustomVisualizationWidget(QGISVisualizationWidget* vi
     auto buttonHandleRight = new QToolButton(handleRight);
     QVBoxLayout *layoutRight = new QVBoxLayout(handleRight);
     layoutRight->setSpacing(0);
-    layoutRight->setMargin(0);
+    layoutRight->setContentsMargins(0, 0, 0, 0);
 
     buttonHandleRight->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     buttonHandleRight->setDown(false);

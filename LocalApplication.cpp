@@ -243,14 +243,30 @@ bool LocalApplication::setupDoneRunPreprocessing(QString &workingDir, QString &/
     errorMessage("First time after installation of OpenSRA, this step will take an additional 1 minute (approx.) to complete background tasks...");
     statusMessage(""); // switch back to status message format
 
-    procEnv.insert("PATH", python);
+    // Resolve the conda env root (the directory that contains python.exe).
+    QFileInfo pythonPath(python);
+    auto condaPrefix = pythonPath.absoluteDir().absolutePath();
+
+    // PATH must include the conda env's native-DLL dirs (Library\bin holds the GDAL/GEOS/
+    // PROJ DLLs); setting it to just python.exe lets steps 1-9 run but crashes the backend
+    // at the spatial crossing step. Prepend the standard conda activation dirs, then the
+    // inherited system PATH so OS DLLs stay reachable.
+#ifdef Q_OS_WIN
+    QStringList condaPathDirs = {
+        condaPrefix,
+        condaPrefix + "\\Library\\bin",
+        condaPrefix + "\\Library\\mingw-w64\\bin",
+        condaPrefix + "\\Library\\usr\\bin",
+        condaPrefix + "\\Scripts",
+        condaPrefix + "\\bin"
+    };
+    procEnv.insert("PATH", condaPathDirs.join(";") + ";" + sysEnv.value("PATH"));
+#else
+    procEnv.insert("PATH", condaPrefix + ":" + sysEnv.value("PATH"));
+#endif
     procEnv.insert("PYTHONPATH", python);
     procEnv.insert("USERNAME", "opensra_user");
     procEnv.insert("LOCALAPPDATA", QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
-
-    // other environment variables needed for OpenSRA
-    QFileInfo pythonPath(python);
-    auto condaPrefix = pythonPath.absoluteDir().absolutePath();
     procEnv.insert("CONDA_PREFIX", condaPrefix);
 
 
@@ -423,13 +439,28 @@ bool LocalApplication::setupDoneRunApplication(QString &tmpDirectory, QString &i
     errorMessage("First time after installation of OpenSRA, this step will take an additional 10 minutes (approx.) to complete background tasks...");
     statusMessage(""); // switch back to status message format
 
-    procEnv.insert("PATH", python);
-    procEnv.insert("PYTHONPATH", python);
-    procEnv.insert("LOCALAPPDATA", QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
-
-    // other environment variables needed for OpenSRA
+    // Resolve the conda env root (the directory that contains python.exe).
     QFileInfo pythonPath(python);
     auto condaPrefix = pythonPath.absoluteDir().absolutePath();
+
+    // PATH must include the conda env's native-DLL dirs (Library\bin holds the GDAL/GEOS/
+    // PROJ DLLs); setting it to just python.exe crashes the backend at the spatial crossing
+    // step. Prepend the standard conda activation dirs, then the inherited system PATH.
+#ifdef Q_OS_WIN
+    QStringList condaPathDirs = {
+        condaPrefix,
+        condaPrefix + "\\Library\\bin",
+        condaPrefix + "\\Library\\mingw-w64\\bin",
+        condaPrefix + "\\Library\\usr\\bin",
+        condaPrefix + "\\Scripts",
+        condaPrefix + "\\bin"
+    };
+    procEnv.insert("PATH", condaPathDirs.join(";") + ";" + sysEnv.value("PATH"));
+#else
+    procEnv.insert("PATH", condaPrefix + ":" + sysEnv.value("PATH"));
+#endif
+    procEnv.insert("PYTHONPATH", python);
+    procEnv.insert("LOCALAPPDATA", QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
     procEnv.insert("CONDA_PREFIX", condaPrefix);
     QString projDataPath = condaPrefix + QDir::separator() + "Library" + QDir::separator() + "share" + QDir::separator() + "proj";
     procEnv.insert("PROJ_DATA", projDataPath);
@@ -521,7 +552,7 @@ int LocalApplication::handlePreprocessDone(int res)
     if(res ==0)
         emit preprocessingDone();
     else
-        this->errorMessage("Error at the \"PREPROCESSING\" step with result "+QString(res));
+        this->errorMessage("Error at the \"PREPROCESSING\" step with result "+QString::number(res));
 
     return 0;
 }
@@ -534,7 +565,7 @@ int LocalApplication::handleApplicationRunDone(int res)
     if(res ==0)
         emit processResults(QString(),QString(),QString());
     else
-        this->errorMessage("Error at the \"PERFORM ANALYSIS\" step with result "+QString(res));
+        this->errorMessage("Error at the \"PERFORM ANALYSIS\" step with result "+QString::number(res));
 
     return 0;
 }

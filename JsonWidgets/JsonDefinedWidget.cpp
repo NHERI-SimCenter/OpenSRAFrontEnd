@@ -52,7 +52,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 JsonDefinedWidget::JsonDefinedWidget(QWidget* parent, const QJsonObject& obj, const QString parentKey) : JsonWidget(parent)
 {
     layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setContentsMargins(0,0,0,0);
 
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -100,7 +100,7 @@ JsonDefinedWidget::JsonDefinedWidget(QWidget* parent, const QJsonObject& obj, co
         auto returnParam = returnObj.value("Params").toArray();
 
         QVBoxLayout *returnParamLayout = new QVBoxLayout();
-        returnParamLayout->setMargin(0);
+        returnParamLayout->setContentsMargins(0, 0, 0, 0);
         returnParamLayout->setSpacing(4);
 
         if (returnParam.size() > 0)

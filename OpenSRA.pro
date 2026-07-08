@@ -45,14 +45,15 @@ win32 {
 
 # GIS plugin
 DEFINES +=  Q_GIS
-PATH_TO_QGIS_PLUGIN=../../R2DTool/qgisplugin
-include($$PATH_TO_QGIS_PLUGIN/QGIS.pri)
+# NOTE (Qt6/QGIS4 migration): the old prebuilt Qt5 QGIS plugin path was removed.
+# The CMake build now provides QGIS via SimCenterCommon/QGIS/SimCenterQGIS.cmake + the
+# from-source QGIS 4 fork. This legacy .pro is kept for reference only; build with CMake.
 
 
 # Specify the path to R2D and common
 PATH_TO_R2D=../../R2DTool/R2DTool
 PATH_TO_COMMON=../../SimCenterCommon
-PATH_TO_BACKEND=../../OpenSRA
+PATH_TO_BACKEND=../../OpenSRABackend
 #PATH_TO_BACKEND=../OpenSRA_dev
 
 # To avoid code copying, include the common SimCenter code
@@ -191,7 +192,9 @@ INCLUDEPATH += $$PWD/Utils \
                $$PWD/UIWidgets \
                $$PWD/JsonWidgets \
                $$PWD/ModelViewItems \
+               "C:/Program Files (x86)/GnuWin32/include"
 
+LIBS += -L"C:/Program Files (x86)/GnuWin32/lib" -lz
 
 # Copies over the examples folder into the build directory
 #win32 {
@@ -227,9 +230,9 @@ INCLUDEPATH += $$PWD/Utils \
 
 #QMAKE_EXTRA_TARGETS += first copyExamples copyBackEnd
 
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/'../../../../../../Program Files (x86)/GnuWin32/lib/' -lzlib
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/'../../../../../../Program Files (x86)/GnuWin32/lib/' -lzlib
-#else:unix: LIBS += -L$$PWD/'../../../../../../Program Files (x86)/GnuWin32/lib/' -lzlib
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/'../../../../../../Program Files (x86)/GnuWin32/lib/' -lzlib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/'../../../../../../Program Files (x86)/GnuWin32/lib/' -lzlib
+else:unix: LIBS += -L$$PWD/'../../../../../../Program Files (x86)/GnuWin32/lib/' -lzlib
 
-#INCLUDEPATH += $$PWD/'../../../../../../Program Files (x86)/GnuWin32/include'
-#DEPENDPATH += $$PWD/'../../../../../../Program Files (x86)/GnuWin32/include'
+INCLUDEPATH += $$PWD/'../../../../../../Program Files (x86)/GnuWin32/include'
+DEPENDPATH += $$PWD/'../../../../../../Program Files (x86)/GnuWin32/include'

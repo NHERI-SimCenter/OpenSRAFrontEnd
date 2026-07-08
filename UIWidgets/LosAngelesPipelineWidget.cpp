@@ -123,7 +123,7 @@ void LosAngelesPipelineWidget::createComponentsBox(void)
 //    QHBoxLayout* regionSitesLayout = new QHBoxLayout(regionLoadWidget);
 
     // Insert the widget three rows from the bottom
-    insertWidgetIntoLayout(regionLoadWidget,3);
+    //insertWidgetIntoLayout(regionLoadWidget,3);  // helper removed in migration; matches sibling pipeline widgets
 
 }
 

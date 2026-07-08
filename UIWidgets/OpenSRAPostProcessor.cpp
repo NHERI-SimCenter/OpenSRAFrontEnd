@@ -88,7 +88,7 @@ OpenSRAPostProcessor::OpenSRAPostProcessor(QWidget *parent, QGISVisualizationWid
     listWidget->header()->resizeSections(QHeaderView::ResizeToContents);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(listWidget);
 

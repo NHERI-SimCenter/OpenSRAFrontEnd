@@ -26,7 +26,6 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QLabel>
 #include <QPushButton>
 #include <QLineEdit>
@@ -472,7 +471,7 @@ void MainWindowWorkflowApp::about()
     //
     // adjust size of application window to the available display
     //
-    QRect rec = QApplication::desktop()->screenGeometry();
+    QRect rec = QGuiApplication::primaryScreen()->geometry();
     int height = 0.50*rec.height();
     int width  = 0.50*rec.width();
     dlg->resize(width, height);

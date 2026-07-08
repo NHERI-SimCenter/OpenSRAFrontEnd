@@ -56,7 +56,7 @@ SourceCharacterizationWidget::SourceCharacterizationWidget(QWidget *parent)
     : SimCenterAppWidget(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     auto sourceLayout = this->getSourceLayout();
 

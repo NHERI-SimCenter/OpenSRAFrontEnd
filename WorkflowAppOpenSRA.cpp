@@ -335,7 +335,7 @@ void WorkflowAppOpenSRA::initialize(void)
     this->setLayout(horizontalLayout);
     horizontalLayout->setSpacing(0);
     this->setContentsMargins(0,0,0,0);
-    horizontalLayout->setMargin(0);
+    horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
     // Create the component selection & add the components to it
     theComponentSelection = new OpenSRAComponentSelection(this);

@@ -1,4 +1,4 @@
-﻿/* *****************************************************************************
+/* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
 
@@ -125,7 +125,7 @@ QWidget* WidgetFactory::getComboBoxWidget(const QJsonObject& obj, const QString&
     mainWidget->setObjectName(parentKey);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(1);
 
     JsonComboBox* comboWidget = new JsonComboBox(mainWidget);
@@ -291,7 +291,7 @@ QWidget* WidgetFactory::getCheckBoxWidget(const QJsonObject& obj, const QString&
     checkBoxWidget->setMethodAndParamJsonObj(obj);
 
     QHBoxLayout* mainLayout = new QHBoxLayout(mainWidget);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(4);
 
     auto text = obj.value("NameToDisplay").toString();
@@ -332,7 +332,7 @@ QLayout* WidgetFactory::getLayoutFromParams(const QJsonObject& params, const QSt
     else
         mainLayout = new QHBoxLayout();
 
-    mainLayout->setMargin(4);
+    mainLayout->setContentsMargins(4, 4, 4, 4);
     mainLayout->setSpacing(2);
 
     // This will create the widgets in a certain order
@@ -421,7 +421,7 @@ bool WidgetFactory::addWidgetToLayout(const QJsonObject& paramObj, const QString
         widgetLabel->setStyleSheet("font-weight: bold; color: black");
 
         QGridLayout* newHLayout = new QGridLayout();
-        newHLayout->setMargin(0);
+        newHLayout->setContentsMargins(0, 0, 0, 0);
         newHLayout->setSpacing(4);
 
         newHLayout->addWidget(widgetLabel,0,0);
@@ -442,7 +442,7 @@ bool WidgetFactory::addWidgetToLayout(const QJsonObject& paramObj, const QString
             QVBoxLayout* newVLayout = new QVBoxLayout();
 
             QGridLayout* newHLayout = new QGridLayout();
-            newHLayout->setMargin(0);
+            newHLayout->setContentsMargins(0, 0, 0, 0);
             newHLayout->setSpacing(4);
 
             newHLayout->addWidget(widgetLabel,0,0);
@@ -465,7 +465,7 @@ bool WidgetFactory::addWidgetToLayout(const QJsonObject& paramObj, const QString
             widgetLabel->setStyleSheet("font-weight: bold; color: black");
 
             QGridLayout* newHLayout = new QGridLayout();
-            newHLayout->setMargin(0);
+            newHLayout->setContentsMargins(0, 0, 0, 0);
             newHLayout->setSpacing(4);
 
             newHLayout->addWidget(widgetLabel,0,0);
@@ -490,7 +490,7 @@ bool WidgetFactory::isNestedComboBoxWidget(const QJsonObject& obj)
 
     for (option = options.begin(); option != options.end(); ++option)
     {
-        auto params = option.value()["Params"].toObject();
+        auto params = option.value().toObject().value("Params").toObject();
 
         if(params.size() != 0)
             return true;

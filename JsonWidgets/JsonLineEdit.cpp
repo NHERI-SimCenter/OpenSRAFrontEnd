@@ -37,7 +37,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Dr. Stevan Gavrilovic, UC Berkeley
 
 #include "JsonLineEdit.h"
-#include <QRegExpValidator>
 #include <sstream>
 
 JsonLineEdit::JsonLineEdit(QWidget* parent) : QLineEdit(parent)

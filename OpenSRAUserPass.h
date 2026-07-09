@@ -7,6 +7,8 @@
 
 #include <QString>
 
-static QString getArcGISKey(void){return "runtimelite,1000,rud6425635914,none,2K0RJAY3FPJ3R6EJM104";}
+// Key intentionally blank: the OpenSRA build is QGIS-based and never calls
+// getArcGISKey(); an empty key is sufficient. (Historical ArcGIS key removed.)
+static QString getArcGISKey(void){return "";}
 
 #endif // OPENSRAUSERPASS_H

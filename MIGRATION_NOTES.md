@@ -59,6 +59,31 @@ nested layout — not carried over.) **There is no `QGIS_DEPS` repo** (confirmed
 - `JsonWidgets/JsonLabel.cpp`, `JsonWidgets/JsonLineEdit.cpp` — removed dead
   `#include <QRegExpValidator>` (no live usage in either file).
 
+## CSV-import fix — the frontend half (inherited from `csv-import-fix`)
+
+This branch descends from `csv-import-fix`, so it carries the **OpenSRAFrontEnd
+half** of the below-ground CSV-pipeline round-trip fix. Because the branch was
+squashed into a single migration commit, these two files are not called out in the
+commit message — recorded here (the R2DTool commit's message points at this file).
+The **R2DTool half** (`UIWidgets/LineAssetInputWidget.cpp`: load-CSV-on-import +
+emit `DataType`/`SiteDataFile`/flattened six-key `SiteLocationParams`) lives on the
+R2DTool `qt6-fixes` branch (commit `a76582b8`).
+
+- `GeneralInformationWidget.cpp` — emit `NDAData` only when it is non-empty **and**
+  distinct from `OpenSRAData` (`if(!ndaData.isEmpty() && ndaData != openSRAData)`).
+  The prior code injected `NDAData == OpenSRAData`, making the backend merge the
+  dataset folder onto itself. Affects what a GUI-exported SetupConfig writes.
+- `LocalApplication.cpp` (two call sites: preprocess ≈L246, main run ≈L442) —
+  builds the backend subprocess `PATH` from the conda env's native-DLL dirs
+  (`Library\bin`, `Library\mingw-w64\bin`, `Library\usr\bin`, `Scripts`, …), not
+  just the `python.exe` directory. Without it a GUI-launched analysis of a
+  below-ground CSV network dies at the spatial-crossing step with **exit 127**
+  (GDAL/GEOS/PROJ DLLs not found); steps 1–9 survive because `GDAL_DATA`/`PROJ_DATA`
+  are set explicitly.
+
+No backend code change is part of this fix — the GUI now simply emits the six
+`SiteLocationParams` keys + `DataType` that `Preprocess.py` already requires.
+
 ## Files deleted (dead code)
 
 - `UIWidgets/OpenSRAPostProcessor_old.cpp` + `.h` — legacy postprocessor, not in the build;

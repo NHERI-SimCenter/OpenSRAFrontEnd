@@ -302,3 +302,50 @@ A clean-PATH (self-contained) launch loads all modules — but hits the same ~24
 → QMetaObject::activate → QgisApp::updateNewLayerInsertionPoint → AV`. I.e. a layer-removal signal drives the embedded
 `QgisApp`'s new-layer-insertion-point slot into an invalid deref. Diagnose vs R2D's QgisApp/layer-tree setup; a RelWithDebInfo
 QGIS (PDBs) would give exact lines.
+
+---
+
+## 2026-07-20 update — packaging validation round (icon, direct launch, PROJ data, crash + serialization fixes)
+
+Found while packaging the fully self-contained distribution and batch-testing all 33
+bundled backend examples from it. Frontend changes (this repo):
+
+- **Windows app icon restored** — QMake's `RC_ICONS` had no CMake equivalent; added
+  `OpenSRA.rc` + a `WIN32` branch in the CMakeLists app-icon block.
+- **Direct launch (R2D-style)** — `main.cpp` defaults `QGIS_PREFIX_PATH` to the exe dir
+  when unset (double-clicking `OpenSRA.exe` now works without the launcher .cmd) and
+  points `PROJ_DATA` at a shipped `share/proj` when present (the packaged app previously
+  had no GUI-side proj.db at all; QGIS bundles proj data only on macOS).
+- **End-of-analysis hardening** — `importResults` wrapped in try/catch (an uncaught
+  QString terminated the Qt6 app with no dialog), null guards for empty results-layer
+  lists (`OpenSRAPostProcessor`, `CustomVisualizationWidget`); results-layer opacity
+  matched by source URI (all sublayers are renamed on import).
+- **Save/load round-trip fixes** — `RandomVariablesWidget` emitted garbage
+  `\rvs_input.csv` paths (and injected `runDir: null`) in File→Save;
+  `GenericModelWidget` silently skipped emission when the workdir `Input` was missing
+  and mis-joined its fallback path; `PipelineNetworkWidget` now propagates
+  infrastructure serialization failures; `UserDefinedGroundMotionWidget` no longer
+  rewrites an empty ShakeMap folder to the cwd; crash guards for short CSV rows
+  (`UserInputCPTWidget`, `RandomVariablesWidget`) and a null line-edit
+  (`ResultsWidget.h`).
+
+Changes OUTSIDE this repo (for upstream reporting):
+
+- **SimCenterCommon `qt6-fixes`**: QGIS-4 use-after-free — `classificationMethodRegistry()
+  ->method()` now returns an owning `unique_ptr`; the migrated code passed a borrowed
+  pointer to `setClassificationMethod()` (which takes ownership), crashing on the first
+  repaint after a graduated renderer was installed (i.e. at end of every analysis).
+  Fixed with `release()`. Also: `zoomToLayer` guards null extents and catches
+  `QgsCsException` (was the source of "Could not transform bounding box to target CRS").
+- **R2DTool `qt6-fixes`**: GIS infrastructure serialization emitted a truncated
+  directory-only `SiteDataFile` (a C++20 `QJsonObject` aliasing no-op:
+  `obj["a"] = obj["b"]` inserts the LHS key after taking the RHS ref) and assumed a
+  copy step OpenSRA disables — now emits the absolute source path; `ShakeMapWidget`
+  bool loader returned `-1` (=true) on failure; per-row bounds checks in
+  `ComponentTableModel`.
+- **Backend (not a git repo)**: 21 patches + 3 data restorations documented in
+  `Backend_Pandas3_Patches_Round2.md` (pandas-3/numpy-2/geopandas-1 compatibility,
+  stale UCERF rupture CSV, missing NGA-West2 GMM tables, wrong-results fixes incl.
+  vs30_source sigma treatment and a positions-as-labels crossing bug). All 28 runnable
+  examples pass end-to-end from the package; the 5 expected-fail examples fail with
+  their designed errors.

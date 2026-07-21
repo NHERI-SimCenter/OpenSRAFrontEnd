@@ -202,7 +202,17 @@ bool CustomVisualizationWidget::inputFromJSON(QJsonObject &jsonObject)
 
 int CustomVisualizationWidget::processResults(QString &filenameResults)
 {
-    theOpenSRAPostProcessor->importResults(filenameResults);
+    // importResults throws QString on a missing/unreadable results file; an exception
+    // escaping this slot would terminate the app under Qt6 (no error dialog)
+    try {
+        theOpenSRAPostProcessor->importResults(filenameResults);
+    } catch (const QString& msg) {
+        errorMessage(msg);
+        return -1;
+    } catch (const std::exception& e) {
+        errorMessage(QString("Error importing results: ") + e.what());
+        return -1;
+    }
 
     this->resultsShow(true);
 

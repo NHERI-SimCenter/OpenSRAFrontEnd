@@ -109,6 +109,13 @@ if(APPLE)
     message(WARNING "App icon not found: ${APP_ICON}")
     set(APP_ICON "")
   endif()
+elseif(WIN32)
+  # .rc embeds icons/openSRA-icon.ico (was RC_ICONS in OpenSRA.pro)
+  set(APP_ICON "${CMAKE_CURRENT_LIST_DIR}/OpenSRA.rc")
+  if(NOT EXISTS "${APP_ICON}")
+    message(WARNING "App icon rc not found: ${APP_ICON}")
+    set(APP_ICON "")
+  endif()
 endif()
 
 # ---- Executable ----

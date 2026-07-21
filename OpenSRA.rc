@@ -1,0 +1,2 @@
+// Windows application icon (CMake equivalent of the old QMake RC_ICONS line)
+IDI_ICON1 ICON "icons/openSRA-icon.ico"

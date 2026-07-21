@@ -150,7 +150,8 @@ bool UserDefinedGroundMotionWidget::inputFromJSON(QJsonObject &jsonObject)
         }
 
         // set the line
-        if (userDefJsonPbj.contains("PathToGMDataFolder"))
+        if (userDefJsonPbj.contains("PathToGMDataFolder")
+                && !userDefJsonPbj["PathToGMDataFolder"].toString().isEmpty())
         {
             auto data_dir = userDefJsonPbj["PathToGMDataFolder"].toString();
 

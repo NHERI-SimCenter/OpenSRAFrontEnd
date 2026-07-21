@@ -258,7 +258,11 @@ bool PipelineNetworkWidget::outputToJSON(QJsonObject &jsonObject)
 
     QJsonObject compObj;
 
-    theCurrInputWidget->outputToJSON(compObj);
+    if(!theCurrInputWidget->outputToJSON(compObj))
+    {
+        this->errorMessage("Error in the json output of the infrastructure widget "+typeOfInf);
+        return false;
+    }
 
     QJsonObject assetObj = compObj.value(theCurrInputWidget->getJsonKeyword()).toObject();
 

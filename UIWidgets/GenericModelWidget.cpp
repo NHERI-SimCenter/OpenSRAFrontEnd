@@ -365,7 +365,9 @@ bool GenericModelWidget::outputToJSON(QJsonObject &jsonObj) {
     fileDirInfo.setFile(fileDir);
     if (!fileDirInfo.exists())
     {
-        return true;
+        // Never silently drop the model (DistType/TableParams/PathToModelInfo all skipped):
+        // create the staging folder instead and fall through to the export below.
+        QDir().mkpath(fileDir);
 //        SimCenterAppWidget::errorMessage("Error: In \"GenericModel.cpp\" - cannot determine path to \"Input\" folder in working dir");
 //        return false;
     }
@@ -589,7 +591,7 @@ bool GenericModelWidget::inputFromJSON(QJsonObject &jsonObj)
         {
             // first try using work_dir/Input as reference
 #ifdef OpenSRA
-            filePath = OpenSRAPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "Input" + filePath;
+            filePath = OpenSRAPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "Input" + QDir::separator() + filePath;
 #else
             filePath = SimCenterPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "Input" + filePath;
 #endif

@@ -65,6 +65,9 @@ public:
 signals:
     void addToRunListButtonPressed();
 
+    // emitted on user edits to the weight/aleatory/epistemic fields
+    void inputsEdited();
+
 private:
 
     QLineEdit* aleatoryLE = nullptr;

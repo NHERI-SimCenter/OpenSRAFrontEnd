@@ -141,6 +141,8 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
 
     connect(addRunListWidget,&AddToRunListWidget::addToRunListButtonPressed, this, &SimCenterJsonWidget::handleAddButtonPressed);
 
+    connect(addRunListWidget,&AddToRunListWidget::inputsEdited, this, &SimCenterJsonWidget::handleRunListInputsEdited);
+
     groupBoxLayout->addWidget(scrollWidget);
 
     //
@@ -872,6 +874,69 @@ void SimCenterJsonWidget::handleListItemSelected(const QModelIndex& index)
         this->errorMessage("Error in SimCenterJsonWidget::handleListItemSelected " + this->objectName());
         return;
     }
+}
+
+
+void SimCenterJsonWidget::handleRunListInputsEdited(void)
+{
+    auto treeItem = listWidget->getCurrentItem();
+
+    if(treeItem == nullptr)
+        return;
+
+    auto itemID = treeItem->getItemID();
+
+    auto itemObj = listWidget->getItemJsonObject(itemID);
+
+    auto itemKey = itemObj.value("Key").toString();
+
+    if(itemKey.isEmpty() || !itemObj.contains(itemKey))
+        return;
+
+    // Only sync when the method shown in the input panel is the selected item's
+    // method, so typing ahead of an "Add" for a different method cannot mutate
+    // the selected item
+    QJsonObject currMethodObj;
+    methodWidget->outputToJSON(currMethodObj);
+    auto currMethod = currMethodObj.value("Method");
+    QString currKey;
+    if(currMethod.isObject())
+    {
+        auto currKeys = currMethod.toObject().keys();
+        if(currKeys.size() == 1)
+            currKey = currKeys.front();
+    }
+    else
+        currKey = currMethod.toString();
+
+    if(currKey != itemKey)
+        return;
+
+    // Re-capture the model weight, aleatory variability, and epistemic uncertainty
+    auto methodObj = itemObj.value(itemKey).toObject();
+    addRunListWidget->outputToJSON(methodObj);
+    itemObj[itemKey] = methodObj;
+    addRunListWidget->outputToJSON(itemObj);
+
+    listWidget->updateItemJsonObject(itemID, itemObj);
+
+    auto aleJson = itemObj.value("Aleatory");
+    auto aleVal = aleJson.isDouble() ? QString::number(aleJson.toDouble()) : aleJson.toString();
+    if (aleVal.isEmpty())
+        aleVal = "Preferred";
+    auto epiJson = itemObj.value("Epistemic");
+    auto epiVal = epiJson.isDouble() ? QString::number(epiJson.toDouble()) : epiJson.toString();
+    if (epiVal.isEmpty())
+        epiVal = "Preferred";
+
+    QString newItemText = itemObj.value("ModelName").toString()
+            + "\n - weight="+ QString::number(itemObj.value("ModelWeight").toDouble())
+            + "\n - aleatory="+ aleVal
+            + "\n - epistemic="+ epiVal;
+
+    treeItem->setData(newItemText, 0);
+
+    listWidget->viewport()->update();
 }
 
 

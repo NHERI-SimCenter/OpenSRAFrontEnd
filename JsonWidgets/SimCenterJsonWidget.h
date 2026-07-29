@@ -76,6 +76,8 @@ public slots:
 
     void handleListItemSelected(const QModelIndex &index);
 
+    void handleRunListInputsEdited(void);
+
 private:
 
     QJsonObject getGenericModelObj(QJsonObject& paramObj, QJsonObject& variableTypesObj);

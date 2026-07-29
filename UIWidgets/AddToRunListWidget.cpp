@@ -108,6 +108,12 @@ AddToRunListWidget::AddToRunListWidget(QWidget* parent) : QWidget(parent)
 
     connect(addRunListButton,&QPushButton::clicked, this, [=](){emit addToRunListButtonPressed();});
 
+    // textEdited fires only on user input, not on programmatic setText, so loading
+    // stored values into the fields cannot echo back into the run list
+    connect(weightLineEdit, &QLineEdit::textEdited, this, &AddToRunListWidget::inputsEdited);
+    connect(aleatoryLE, &QLineEdit::textEdited, this, &AddToRunListWidget::inputsEdited);
+    connect(episLE, &QLineEdit::textEdited, this, &AddToRunListWidget::inputsEdited);
+
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 

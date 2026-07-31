@@ -102,8 +102,10 @@ EngineeringDemandParameterWidget::EngineeringDemandParameterWidget(QJsonObject m
         vecWidgets.append(newWidget);
     }
 
-    theComponentSelection->setWidth(120);
-    theComponentSelection->setItemWidthHeight(120,70);
+    // 150 px to match the DV/DM panel sidebars (long method names wrap to
+    // <= 3 lines of the 16 px bold sidebar font within the 70 px item height)
+    theComponentSelection->setWidth(150);
+    theComponentSelection->setItemWidthHeight(150,70);
 
     theComponentSelection->displayComponent(0);
 

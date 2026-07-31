@@ -157,7 +157,7 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
         inputLayout->setContentsMargins(0, 0, 0, 0);
 
         strainLandslideCheckBox = new QCheckBox("1) Consider strain preloading (checked = yes)?");
-        strainLandslideCheckBox->setChecked(false);
+        strainLandslideCheckBox->setChecked(true);
 
         inputLayout->addWidget(strainLandslideCheckBox);
         groupBoxLayout->addLayout(inputLayout,Qt::AlignCenter);
@@ -170,15 +170,15 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
 
         QHBoxLayout* bufferLayout = new QHBoxLayout();
         bufferLayout->setContentsMargins(0, 0, 0, 0);
-        bufferCheckBox = new QCheckBox("1) Increase buffer on fault traces?");
-        bufferCheckBox->setChecked(false);
+        bufferCheckBox = new QCheckBox("1) Increase buffer on fault traces (UCERF only)?");
+        bufferCheckBox->setChecked(true);
         auto bufferPrimaryLabel = new QLabel("Buffer for Primary Hazard (m):");
         bufferPrimaryLineEdit = new QLineEdit();
-        bufferPrimaryLineEdit->setEnabled(false);
+        bufferPrimaryLineEdit->setEnabled(true);
         bufferPrimaryLineEdit->setText("100");
         auto bufferSecondaryLabel = new QLabel("Buffer for Secondary Hazard (m):");
         bufferSecondaryLineEdit = new QLineEdit();
-        bufferSecondaryLineEdit->setEnabled(false);
+        bufferSecondaryLineEdit->setEnabled(true);
         bufferSecondaryLineEdit->setText("100");
         bufferLayout->addWidget(bufferCheckBox);
         bufferLayout->addWidget(bufferPrimaryLabel);
@@ -199,7 +199,7 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
         });
 
         strainFaultRuptureCheckBox = new QCheckBox("2) Consider strain preloading (checked = yes)?");
-        strainFaultRuptureCheckBox->setChecked(false);
+        strainFaultRuptureCheckBox->setChecked(true);
 
         inputLayout->addLayout(bufferLayout);
         inputLayout->addWidget(strainFaultRuptureCheckBox);

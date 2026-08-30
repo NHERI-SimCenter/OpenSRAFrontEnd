@@ -88,7 +88,7 @@ OpenSRAPostProcessor::OpenSRAPostProcessor(QWidget *parent, QGISVisualizationWid
     listWidget->header()->resizeSections(QHeaderView::ResizeToContents);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(listWidget);
 
@@ -97,7 +97,9 @@ OpenSRAPostProcessor::OpenSRAPostProcessor(QWidget *parent, QGISVisualizationWid
 
 void OpenSRAPostProcessor::handleModifyLegend(void)
 {
-    auto res_layer = results_layers.at(0);
+    auto res_layer = results_layers.value(0);
+    if (res_layer == nullptr)
+        return;
 
     auto layerId = res_layer->id();
 
@@ -118,6 +120,12 @@ int OpenSRAPostProcessor::importResultVisuals(const QString& pathToResults)
     results_layers = theVisualizationWidget->addVectorInGroup(pathToResults,"Results", "ogr");
 
     auto mean_layer = results_layers.value(0);
+
+    if (mean_layer == nullptr)
+    {
+        this->errorMessage("Error: no layers could be loaded from the results file "+pathToResults);
+        return -1;
+    }
 
     auto data_provider = dynamic_cast<QgsVectorDataProvider*>(mean_layer->dataProvider());
 
@@ -181,10 +189,12 @@ int OpenSRAPostProcessor::importResultVisuals(const QString& pathToResults)
     QString name;
     for(auto&& it: results_layers)
     {
-        name = it->name();
-        if (name == "deformation_polygons_crossed")
+        // addVectorInGroup() renames every sublayer to "Results"; identify the original
+        // sublayer via the provider source URI (...|layername=<table>) instead
+        name = it->source();
+        if (name.contains("layername=deformation_polygons_crossed"))
             it->setOpacity(0.7);
-        if (name == "caprocks_with_crossings")
+        if (name.contains("layername=caprocks_with_crossings"))
             it->setOpacity(0.7);
     }
 
@@ -229,7 +239,7 @@ void OpenSRAPostProcessor::handleListSelection(const TreeItem* itemSelected)
         return;
     }
 
-    auto res_layer = results_layers.at(0);
+    auto res_layer = results_layers.value(0);
 
     if(res_layer == nullptr)
     {

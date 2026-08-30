@@ -62,7 +62,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 RandomVariablesWidget::RandomVariablesWidget(QWidget *parent) : SimCenterAppWidget(parent)
 {
     verticalLayout = new QVBoxLayout(this);
-    verticalLayout->setMargin(2);
+    verticalLayout->setContentsMargins(2, 2, 2, 2);
     verticalLayout->setSpacing(2);
 
     RVTableHeaders = QStringList({"Name","Description","Source","Distribution Type","Mean or Median","Sigma","CoV","Distribution Min","Distribution Max","From Model"});
@@ -108,7 +108,7 @@ void RandomVariablesWidget::makeRVWidget(void)
 
     // title & add button
     QHBoxLayout *titleLayout = new QHBoxLayout();
-    //titleLayout->setMargin(10);
+    //titleLayout->setContentsMargins(10, 10, 10, 10);
 
     SectionTitle *title=new SectionTitle();
     title->setText(tr("Input Variables"));
@@ -407,8 +407,15 @@ bool RandomVariablesWidget::outputToJSON(QJsonObject &jsonObject) {
     //auto finalRVPath = pathToRvFile + QDir::separator() + "rvs_input.csv";
     //auto finalFixedPath = pathToFixedFile + QDir::separator() + "fixed_input.csv";
 
-    auto finalRVPath = jsonObject["runDir"].toString() + QDir::separator() + "rvs_input.csv";
-    auto finalFixedPath = jsonObject["runDir"].toString() + QDir::separator() + "fixed_input.csv";
+    // "runDir" exists only in the run flow (assembleInputFile). In File->Save there is no
+    // staging dir, so emit bare names matching the shipped examples; inputFromJSON resolves
+    // them against the config's own folder (loadFile sets QDir::currentPath() to it).
+    // .value() (const) avoids the non-const operator[] inserting a spurious "runDir": null.
+    const QString runDir = jsonObject.value("runDir").toString();
+    auto finalRVPath = runDir.isEmpty() ? QString("rvs_input.csv")
+                                        : runDir + QDir::separator() + "rvs_input.csv";
+    auto finalFixedPath = runDir.isEmpty() ? QString("fixed_input.csv")
+                                           : runDir + QDir::separator() + "fixed_input.csv";
 
     QJsonObject inputParamObj;
 
@@ -843,6 +850,12 @@ bool RandomVariablesWidget::handleLoadVars(const QString& filePath, RVTableView*
         if(param.isEmpty())
         {
             this->errorMessage("Error, an empty variable row in the input file "+filePath);
+            return false;
+        }
+
+        if(param.size() <= indexOfName)
+        {
+            this->errorMessage("Error, a short variable row (missing the 'Name' column) in the input file "+filePath);
             return false;
         }
 

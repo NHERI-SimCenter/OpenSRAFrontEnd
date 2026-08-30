@@ -38,7 +38,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "JsonLabel.h"
 
-#include <QRegExpValidator>
 #include <sstream>
 
 JsonLabel::JsonLabel(QWidget* parent) : QLabel(parent)

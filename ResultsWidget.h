@@ -91,7 +91,7 @@ private:
     QVBoxLayout* mainLayout;
     QWidget* resultsPageWidget;
 
-    AssetInputDelegate* selectComponentsLineEdit;
+    AssetInputDelegate* selectComponentsLineEdit = nullptr;
     QGISVisualizationWidget* theVisualizationWidget;
 
     std::unique_ptr<OpenSRAPostProcessor> theOpenSRAPostProcessor;

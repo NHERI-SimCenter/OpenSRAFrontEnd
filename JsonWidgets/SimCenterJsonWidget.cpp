@@ -95,7 +95,7 @@ SimCenterJsonWidget::SimCenterJsonWidget(QString methodName, QJsonObject jsonObj
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0,0,0,0);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     auto mainWidget = this->getWidgetBox(jsonObj);
 
@@ -141,6 +141,8 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
 
     connect(addRunListWidget,&AddToRunListWidget::addToRunListButtonPressed, this, &SimCenterJsonWidget::handleAddButtonPressed);
 
+    connect(addRunListWidget,&AddToRunListWidget::inputsEdited, this, &SimCenterJsonWidget::handleRunListInputsEdited);
+
     groupBoxLayout->addWidget(scrollWidget);
 
     //
@@ -152,10 +154,10 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
     if(nameToDisplay == "Landslide Induced Pipe Strain")
     {
         QVBoxLayout* inputLayout = new QVBoxLayout();
-        inputLayout->setMargin(0);
+        inputLayout->setContentsMargins(0, 0, 0, 0);
 
         strainLandslideCheckBox = new QCheckBox("1) Consider strain preloading (checked = yes)?");
-        strainLandslideCheckBox->setChecked(false);
+        strainLandslideCheckBox->setChecked(true);
 
         inputLayout->addWidget(strainLandslideCheckBox);
         groupBoxLayout->addLayout(inputLayout,Qt::AlignCenter);
@@ -164,19 +166,19 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
     if(nameToDisplay == "Fault Rupture Induced Pipe Strain")
     {
         QVBoxLayout* inputLayout = new QVBoxLayout();
-        inputLayout->setMargin(0);
+        inputLayout->setContentsMargins(0, 0, 0, 0);
 
         QHBoxLayout* bufferLayout = new QHBoxLayout();
-        bufferLayout->setMargin(0);
-        bufferCheckBox = new QCheckBox("1) Increase buffer on fault traces?");
-        bufferCheckBox->setChecked(false);
+        bufferLayout->setContentsMargins(0, 0, 0, 0);
+        bufferCheckBox = new QCheckBox("1) Increase buffer on fault traces (UCERF only)?");
+        bufferCheckBox->setChecked(true);
         auto bufferPrimaryLabel = new QLabel("Buffer for Primary Hazard (m):");
         bufferPrimaryLineEdit = new QLineEdit();
-        bufferPrimaryLineEdit->setEnabled(false);
+        bufferPrimaryLineEdit->setEnabled(true);
         bufferPrimaryLineEdit->setText("100");
         auto bufferSecondaryLabel = new QLabel("Buffer for Secondary Hazard (m):");
         bufferSecondaryLineEdit = new QLineEdit();
-        bufferSecondaryLineEdit->setEnabled(false);
+        bufferSecondaryLineEdit->setEnabled(true);
         bufferSecondaryLineEdit->setText("100");
         bufferLayout->addWidget(bufferCheckBox);
         bufferLayout->addWidget(bufferPrimaryLabel);
@@ -197,7 +199,7 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
         });
 
         strainFaultRuptureCheckBox = new QCheckBox("2) Consider strain preloading (checked = yes)?");
-        strainFaultRuptureCheckBox->setChecked(false);
+        strainFaultRuptureCheckBox->setChecked(true);
 
         inputLayout->addLayout(bufferLayout);
         inputLayout->addWidget(strainFaultRuptureCheckBox);
@@ -210,7 +212,7 @@ QGroupBox* SimCenterJsonWidget::getWidgetBox(const QJsonObject jsonObj)
     {
 
         QVBoxLayout* inputLayout = new QVBoxLayout();
-        inputLayout->setMargin(0);
+        inputLayout->setContentsMargins(0, 0, 0, 0);
 
         // widget for additional landslide parameters for deformation polygons to use
         defPolyLineEdit = new QLineEdit();
@@ -872,6 +874,69 @@ void SimCenterJsonWidget::handleListItemSelected(const QModelIndex& index)
         this->errorMessage("Error in SimCenterJsonWidget::handleListItemSelected " + this->objectName());
         return;
     }
+}
+
+
+void SimCenterJsonWidget::handleRunListInputsEdited(void)
+{
+    auto treeItem = listWidget->getCurrentItem();
+
+    if(treeItem == nullptr)
+        return;
+
+    auto itemID = treeItem->getItemID();
+
+    auto itemObj = listWidget->getItemJsonObject(itemID);
+
+    auto itemKey = itemObj.value("Key").toString();
+
+    if(itemKey.isEmpty() || !itemObj.contains(itemKey))
+        return;
+
+    // Only sync when the method shown in the input panel is the selected item's
+    // method, so typing ahead of an "Add" for a different method cannot mutate
+    // the selected item
+    QJsonObject currMethodObj;
+    methodWidget->outputToJSON(currMethodObj);
+    auto currMethod = currMethodObj.value("Method");
+    QString currKey;
+    if(currMethod.isObject())
+    {
+        auto currKeys = currMethod.toObject().keys();
+        if(currKeys.size() == 1)
+            currKey = currKeys.front();
+    }
+    else
+        currKey = currMethod.toString();
+
+    if(currKey != itemKey)
+        return;
+
+    // Re-capture the model weight, aleatory variability, and epistemic uncertainty
+    auto methodObj = itemObj.value(itemKey).toObject();
+    addRunListWidget->outputToJSON(methodObj);
+    itemObj[itemKey] = methodObj;
+    addRunListWidget->outputToJSON(itemObj);
+
+    listWidget->updateItemJsonObject(itemID, itemObj);
+
+    auto aleJson = itemObj.value("Aleatory");
+    auto aleVal = aleJson.isDouble() ? QString::number(aleJson.toDouble()) : aleJson.toString();
+    if (aleVal.isEmpty())
+        aleVal = "Preferred";
+    auto epiJson = itemObj.value("Epistemic");
+    auto epiVal = epiJson.isDouble() ? QString::number(epiJson.toDouble()) : epiJson.toString();
+    if (epiVal.isEmpty())
+        epiVal = "Preferred";
+
+    QString newItemText = itemObj.value("ModelName").toString()
+            + "\n - weight="+ QString::number(itemObj.value("ModelWeight").toDouble())
+            + "\n - aleatory="+ aleVal
+            + "\n - epistemic="+ epiVal;
+
+    treeItem->setData(newItemText, 0);
+
+    listWidget->viewport()->update();
 }
 
 

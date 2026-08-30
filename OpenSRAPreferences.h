@@ -1,5 +1,5 @@
-﻿#ifndef SIMCENTER_PREFERENCES_H
-#define SIMCENTER_PREFERENCES_H
+﻿#ifndef OPENSRA_PREFERENCES_H
+#define OPENSRA_PREFERENCES_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).

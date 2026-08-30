@@ -85,13 +85,13 @@ PipelineNetworkWidget::PipelineNetworkWidget(VisualizationWidget* visWidget, QWi
 {
     this->setContentsMargins(0,0,0,0);
 
-    theMainLayout->setMargin(0);
+    theMainLayout->setContentsMargins(0, 0, 0, 0);
     theMainLayout->setContentsMargins(5,0,0,0);
     theMainLayout->setSpacing(0);
 
     QHBoxLayout *theHeaderLayout = new QHBoxLayout();
     theHeaderLayout->setContentsMargins(0,0,0,0);
-    theHeaderLayout->setMargin(0);
+    theHeaderLayout->setContentsMargins(0, 0, 0, 0);
     theHeaderLayout->setSpacing(0);
     SectionTitle *label = new SectionTitle();
     label->setText(QString("Infrastructure"));
@@ -258,7 +258,11 @@ bool PipelineNetworkWidget::outputToJSON(QJsonObject &jsonObject)
 
     QJsonObject compObj;
 
-    theCurrInputWidget->outputToJSON(compObj);
+    if(!theCurrInputWidget->outputToJSON(compObj))
+    {
+        this->errorMessage("Error in the json output of the infrastructure widget "+typeOfInf);
+        return false;
+    }
 
     QJsonObject assetObj = compObj.value(theCurrInputWidget->getJsonKeyword()).toObject();
 
@@ -313,7 +317,7 @@ bool PipelineNetworkWidget::outputAppDataToJSON(QJsonObject &jsonObject)
         return false;
     }
 
-    jsonObject[jsonKeyword] = compObj;
+    jsonObject[QStringLiteral("GasNetwork")] = compObj;
 
     return true;
 }
@@ -322,13 +326,13 @@ bool PipelineNetworkWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 bool PipelineNetworkWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
 
-    if (!jsonObject.contains(jsonKeyword))
+    if (!jsonObject.contains(QStringLiteral("GasNetwork")))
     {
-        this->errorMessage("Missing the json keyword "+jsonKeyword+" in input file");
+        this->errorMessage("Missing the json keyword "+QStringLiteral("GasNetwork")+" in input file");
         return false;
     }
 
-    auto gasNetworkObj = jsonObject[jsonKeyword].toObject();
+    auto gasNetworkObj = jsonObject[QStringLiteral("GasNetwork")].toObject();
 
     QStringList keys = gasNetworkObj.keys();
     if (keys.size() == 1) {

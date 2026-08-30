@@ -1,4 +1,4 @@
-﻿/* *****************************************************************************
+/* *****************************************************************************
 Copyright (c) 2016-2021, The Regents of the University of California (Regents).
 All rights reserved.
 
@@ -49,7 +49,7 @@ UncertaintyQuantificationWidget::UncertaintyQuantificationWidget(QWidget *parent
     : SimCenterAppWidget(parent)
 {
     auto layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setContentsMargins(5,0,0,0);
 
     QHBoxLayout *theHeaderLayout = new QHBoxLayout();

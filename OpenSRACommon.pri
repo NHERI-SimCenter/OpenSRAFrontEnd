@@ -13,6 +13,8 @@ INCLUDEPATH +=  $$PATH_TO_R2D \
                 $$PATH_TO_COMMON/Workflow/GRAPHICS \
                 $$PATH_TO_COMMON/Workflow/WORKFLOW/ModelViewItems \
                 $$PATH_TO_COMMON/RandomVariables \
+                $$PATH_TO_R2D/systemPerformanceWidgets \
+                $$PATH_TO_COMMON/Workflow/WORKFLOW/Utils \
 
 
 SOURCES +=  $$PATH_TO_R2D/Tools/CSVReaderWriter.cpp \

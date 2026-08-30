@@ -13,6 +13,7 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QFile>
+#include <QFileInfo>
 #include <QTime>
 #include <QTextStream>
 #include <QOpenGLWidget>
@@ -43,7 +44,7 @@ void customMessageOutput(QtMsgType type, const QMessageLogContext &context, cons
         QFile outFile(logFilePath);
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
         QTextStream ts(&outFile);
-        ts << txt << endl;
+        ts << txt << Qt::endl;
         outFile.close();
     } else {
         fprintf(stderr, "%s %s: %s (%s:%u, %s)\n", formattedTimeMsg.constData(), logLevelMsg.constData(), localMsg.constData(), context.file, context.line, context.function);
@@ -84,6 +85,21 @@ int main(int argc, char *argv[])
 
     QgsApplication a( argc, argv, true );
 
+    // Packaged layout ships QGIS providers/resources next to the exe. When no explicit
+    // QGIS_PREFIX_PATH is set (app launched directly, not via RunOpenSRA-Portable.cmd),
+    // point QGIS at the exe directory so providers load R2D-style on a double-click.
+    if (qEnvironmentVariableIsEmpty("QGIS_PREFIX_PATH"))
+        QgsApplication::setPrefixPath(QCoreApplication::applicationDirPath(), true);
+
+    // GUI-side PROJ (proj_9.dll) has no valid data dir in the packaged layout — QGIS
+    // only bundles proj data on macOS — so grid-based datum transforms would silently
+    // degrade. Point PROJ_DATA at the shipped share/proj when present (set before
+    // initQgis() runs; never overrides a user-provided PROJ_DATA/PROJ_LIB).
+    if (qEnvironmentVariableIsEmpty("PROJ_DATA") && qEnvironmentVariableIsEmpty("PROJ_LIB")) {
+        const QString projData = QCoreApplication::applicationDirPath() + "/share/proj";
+        if (QFileInfo::exists(projData + "/proj.db"))
+            qputenv("PROJ_DATA", QDir::toNativeSeparators(projData).toLocal8Bit());
+    }
 
     auto prefs = OpenSRAPreferences::getInstance();
 

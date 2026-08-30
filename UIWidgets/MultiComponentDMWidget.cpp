@@ -59,7 +59,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 MultiComponentDMWidget::MultiComponentDMWidget(QWidget *parent) : MultiComponentR2D("DamageMeasure",parent)
 {
-    theMainLayout->setMargin(0);
+    theMainLayout->setContentsMargins(0, 0, 0, 0);
     theMainLayout->setSpacing(0);
     theMainLayout->setContentsMargins(5,0,0,0);
 
@@ -159,7 +159,7 @@ bool MultiComponentDMWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 
 bool MultiComponentDMWidget::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-    auto keyJsonObj = jsonObject[jsonKeyword].toObject();
+    auto keyJsonObj = jsonObject[QStringLiteral("DamageMeasure")].toObject();
 
     return this->inputFromJSON(keyJsonObj);
 }

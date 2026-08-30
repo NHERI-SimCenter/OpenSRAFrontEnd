@@ -846,6 +846,11 @@ void UserInputCPTWidget::loadUserCPTData(void)
     {
         QStringList& rowStr = data[i];
 
+        // Skip blank/short rows (e.g., a trailing empty line in the CSV) - the
+        // header-derived indexes would read past the end of the row otherwise
+        if(rowStr.size() <= qMax(qMax(indexCPTName, indexLon), indexLat))
+            continue;
+
         auto stationName = rowStr[indexCPTName];
 
         // Path to station files, e.g., site0.csv

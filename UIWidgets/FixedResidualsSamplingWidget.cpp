@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QString>
-#include <QRegExpValidator>
 
 #include <sstream>
 

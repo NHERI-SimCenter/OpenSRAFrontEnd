@@ -281,9 +281,9 @@ QgsRasterLayer* OpenSRAPreProcessor::loadRaster(const QString& rasterFilePath, c
 
     rasterlayer->setOpacity(0.5);
 
-    rasterlayer->dataProvider()->setZoomedInResamplingMethod(QgsRasterDataProvider::ResamplingMethod::Bilinear);
+    rasterlayer->dataProvider()->setZoomedInResamplingMethod(Qgis::RasterResamplingMethod::Bilinear);
 
-    rasterlayer->dataProvider()->setZoomedOutResamplingMethod(QgsRasterDataProvider::ResamplingMethod::Bilinear);
+    rasterlayer->dataProvider()->setZoomedOutResamplingMethod(Qgis::RasterResamplingMethod::Bilinear);
 
     rasterlayer->dataProvider()->enableProviderResampling(true);
 

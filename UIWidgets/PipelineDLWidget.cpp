@@ -55,7 +55,7 @@ PipelineDLWidget::PipelineDLWidget(QWidget *parent) : MultiComponentR2D("OpenSRA
 {
     this->setContentsMargins(0,0,0,0);
 
-    theMainLayout->setMargin(0);
+    theMainLayout->setContentsMargins(0, 0, 0, 0);
     theMainLayout->setContentsMargins(5,0,0,0);
     theMainLayout->setSpacing(0);
 

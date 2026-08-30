@@ -59,7 +59,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 DecisionVariableWidget::DecisionVariableWidget(QJsonObject mainObj, QWidget *parent): SimCenterAppWidget(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->setContentsMargins(5,0,0,0);
 
@@ -102,8 +102,10 @@ DecisionVariableWidget::DecisionVariableWidget(QJsonObject mainObj, QWidget *par
         vecWidgets.append(newWidget);
     }
 
-    theComponentSelection->setWidth(120);
-    theComponentSelection->setItemWidthHeight(120,70);
+    // 150 px so long names like "Shaking Induced Rupture on Wells" wrap to
+    // <= 3 lines of the 16 px bold sidebar font and fit the 70 px item height
+    theComponentSelection->setWidth(150);
+    theComponentSelection->setItemWidthHeight(150,70);
 
     theComponentSelection->displayComponent(0);
 
